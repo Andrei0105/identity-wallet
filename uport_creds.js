@@ -16,6 +16,8 @@ function getCreds() {
         const did = res.payload.did
         json = JSON.stringify(res.payload)
         console.log(json)
+        qrImage = document.getElementById('qr-code')
+        qrImage.remove()
         document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json
     })
 }
@@ -30,9 +32,16 @@ var config = { childList: true };
 // Callback function to execute when mutations are observed
 var callback = function (mutationsList, observer) {
     for (var mutation of mutationsList) {
-        console.log('A child node has been added or removed.');
-        var uportWrapperDiv = document.getElementById('uport-wrapper');
-        uportWrapperDiv.style.display = 'none';
+        if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper')
+        {
+            console.log('uPort wrapper was added');
+            var uportWrapperDiv = document.getElementById('uport-wrapper');
+            uportWrapperDiv.style.display = 'none';
+            var imgDiv = document.getElementById('uport__modal-main')
+            var imgs = imgDiv.getElementsByTagName("img");
+            console.log("QR code src:\n" + imgs[0].src);
+            show_image(imgs[0].src, 275, 275, 'qr-code')
+        }
     }
 };
 
@@ -43,3 +52,14 @@ var observer = new MutationObserver(callback);
 observer.observe(targetNode, config);
 
 setTimeout(checkVariable, 3000);
+
+function show_image(src, width, height, id, alt) {
+    var img = document.createElement("img");
+    img.src = src;
+    img.width = width;
+    img.height = height;
+    img.alt = alt;
+    img.id = id;
+
+    document.body.appendChild(img);
+}
