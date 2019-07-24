@@ -10,15 +10,22 @@ function getCreds() {
     console.log('done');
 
     //TO DO: hide the uport wrapper and get the JWT
-    uport.requestDisclosure()
+    uport.requestDisclosure({
+        requested: ['name', 'country'],
+        verified: ['Example', 'Diploma']
+    })
 
     uport.onResponse('disclosureReq').then(res => {
-        const did = res.payload.did
-        json = JSON.stringify(res.payload)
-        console.log(json)
+        json = res.payload
+        jsonString = JSON.stringify(json)
+        console.log('JSON response:\n' + jsonString)
         qrImage = document.getElementById('qr-code')
         qrImage.remove()
-        document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json
+        document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json.did
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            console.log('Messaged tab: ' + tabs[0].url)
+            chrome.tabs.sendMessage(tabs[0].id, { action: "fillFields", name: json.name, country: json.country});
+        });
     })
 }
 
@@ -32,8 +39,7 @@ var config = { childList: true };
 // Callback function to execute when mutations are observed
 var callback = function (mutationsList, observer) {
     for (var mutation of mutationsList) {
-        if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper')
-        {
+        if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper') {
             console.log('uPort wrapper was added');
             var uportWrapperDiv = document.getElementById('uport-wrapper');
             uportWrapperDiv.style.display = 'none';

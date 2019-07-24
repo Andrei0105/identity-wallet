@@ -1,9 +1,8 @@
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    console.log('here field')
     if (msg.action === "fillFields") {
-        $("#user").val("name@email.com")
-        $("#pw").val("pass123")
+        $("#name").val(msg.name)
+        $("#country").val(msg.country)
     }
 });
 
