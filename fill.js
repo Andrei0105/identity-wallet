@@ -6,6 +6,14 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     }
 });
 
+// Listener for message from in page script
+window.addEventListener('message', function (event) {
+    message = event.data;
+    if (message.type == 'uport-test') {
+        console.log('Message from inpage received:\n' + JSON.stringify(message));
+    }
+});
+
 function injectScript(file, node) {
     var th = document.getElementsByTagName(node)[0];
     var s = document.createElement('script');
@@ -13,5 +21,6 @@ function injectScript(file, node) {
     s.setAttribute('src', file);
     th.appendChild(s);
 }
-injectScript( chrome.extension.getURL('inpage.js'), 'head');
+
+injectScript(chrome.extension.getURL('inpage.js'), 'head');
 
