@@ -23,4 +23,13 @@ function onClickSend() {
     }, "*")
 }
 
+function requestUportClaims(event) {
+    data = event.data;
+    window.postMessage({
+        type: "iw-up-rc",
+        simple: data.simple,
+        verified: data.verified
+    });
+}
+
 createButton(onClickSend);

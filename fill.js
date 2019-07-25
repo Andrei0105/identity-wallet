@@ -12,6 +12,9 @@ window.addEventListener('message', function (event) {
     if (message.type == 'uport-test') {
         console.log('Message from inpage received:\n' + JSON.stringify(message));
     }
+    else if (message.type == 'iw-up-rc') {
+        console.log('Message from inpage received:\n' + JSON.stringify(message));
+    }
 });
 
 function injectScript(file, node) {
