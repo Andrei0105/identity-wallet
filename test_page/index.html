@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <input name="name" type="text" id="name">
+    <input name="country" type="text" id="country">
+
+    <div id='div-button'>
+    </div>
+    <div id='div-button'>
+    </div>
+
+    <button type="button" id='static_btn'>Static page button</button>
+
+    <script>
+        function checkVariable() {
+
+            if (typeof window.ext !== "undefined") {
+                console.log(window.ext.x())
+                $(document).ready(function () {
+                    $('#static_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] }, requestUportClaims);
+                });
+            }
+        }
+
+        setTimeout(checkVariable, 1000);
+
+    </script>
+
+</body>
+
+</html>
