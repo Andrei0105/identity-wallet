@@ -30,6 +30,13 @@ function requestUportClaims(event) {
         simple: data.simple,
         verified: data.verified
     });
+    openPopup();
+}
+
+function openPopup() {
+    window.postMessage({
+        type: "open-popup"
+    });
 }
 
 createButton(onClickSend);

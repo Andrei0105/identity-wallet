@@ -1,10 +1,14 @@
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    if (msg.action === "fillFields") {
-        $("#name").val(msg.name)
-        $("#country").val(msg.country)
-    }
-});
+// chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+//     if (msg.action === "fillFields") {
+//         $("#name").val(msg.name)
+//         $("#country").val(msg.country)
+//     }
+// });
+
+function requestPopup() {
+    chrome.runtime.sendMessage({ type: "openPopup" });
+}
 
 window.pendingData = null;
 // Listener for message from in page script
@@ -16,6 +20,10 @@ window.addEventListener('message', function (event) {
     else if (message.type == 'iw-up-rc') {
         console.log('Message from inpage received:\n' + JSON.stringify(message));
         window.pendingData = message;
+    }
+    else if (message.type == 'open-popup') {
+        console.log('CS: Open popup received.')
+        requestPopup();
     }
 });
 
@@ -29,23 +37,39 @@ function injectScript(file, node) {
 
 injectScript(chrome.extension.getURL('inpage.js'), 'head');
 
-function sendDataToPopup(data) {
-    chrome.runtime.sendMessage(data);
+function listenerAction(data, messageType) {
+    switch (messageType) {
+        case "requestData":
+            chrome.runtime.sendMessage(data);
+            break;
+        default:
+            break;
+    }
 }
 
 chrome.runtime.onMessage.addListener(
-    function(message, sender, sendDataToPopup) {
-        switch(message.type) {
+    function (message, sender, listenerAction) {
+        console.log(message);
+        switch (message.type) {
             case "requestData":
-            {
-                console.log("CS: Received requestData");
-                console.log(window.pendingData)
-                sendDataToPopup(window.pendingData);
+                {
+                    console.log("CS: Received requestData");
+                    console.log("Pending data:", window.pendingData)
+                    listenerAction(pendingData, message.type);
+                }
                 break;
-            }
-                default:
+            case "fillFields":
+                {
+                    console.log('fill');
+                    console.log(message)
+                    $("#name").val(message.name);
+                    $("#country").val(message.country);
+                    break;
+                }
+            default:
                 console.error("Unrecognised message: ", message);
         }
     }
+
 );
 

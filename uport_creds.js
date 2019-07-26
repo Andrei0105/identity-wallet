@@ -1,8 +1,9 @@
 function checkVariable() {
     if (typeof window.uportconnect !== "undefined") {
         // getCreds();
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {type: "requestData"}, function(data) {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { type: "requestData" }, function (data) {
+                console.log(tabs[0].url)
                 simple = data.simple;
                 verified = data.verified;
                 getCreds(simple, verified);
@@ -11,7 +12,21 @@ function checkVariable() {
     }
 }
 
-function getCreds(simple, verified) {
+function checkVariableStorage() {
+    if (typeof window.uportconnect !== "undefined") {
+        chrome.storage.local.get(['tab_id'], function (data) {
+            tab_id = data.tab_id;
+            chrome.tabs.sendMessage(tab_id, { type: "requestData" }, undefined, function (data) {
+                simple = data.simple;
+                verified = data.verified;
+                console.log('received data', simple, verified);
+                getCreds(tab_id, simple, verified);
+            });
+        });
+    }
+}
+
+function getCreds(targetTabId, simple, verified) {
     const Connect = window.uportconnect;
     const uport = new Connect('MyDApp');
     console.log('done');
@@ -29,10 +44,11 @@ function getCreds(simple, verified) {
         qrImage = document.getElementById('qr-code')
         qrImage.remove()
         document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json.did
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            console.log('Messaged tab: ' + tabs[0].url)
-            chrome.tabs.sendMessage(tabs[0].id, { action: "fillFields", name: json.name, country: json.country});
-        });
+        // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        //     console.log('Messaged tab: ' + tabs[0].url)
+        //     chrome.tabs.sendMessage(tabs[0].id, { action: "fillFields", name: json.name, country: json.country });
+        // });
+        chrome.tabs.sendMessage(targetTabId, { type: "fillFields", name: json.name, country: json.country });
     })
 }
 
@@ -64,7 +80,7 @@ var observer = new MutationObserver(callback);
 // Start observing the target node for configured mutations
 observer.observe(targetNode, config);
 
-setTimeout(checkVariable, 3000);
+setTimeout(checkVariableStorage, 3000);
 
 function show_image(src, width, height, id, alt) {
     var img = document.createElement("img");
