@@ -1,18 +1,25 @@
 function checkVariable() {
     if (typeof window.uportconnect !== "undefined") {
-        getCreds();
+        // getCreds();
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {type: "requestData"}, function(data) {
+                simple = data.simple;
+                verified = data.verified;
+                getCreds(simple, verified);
+            });
+        });
     }
 }
 
-function getCreds() {
+function getCreds(simple, verified) {
     const Connect = window.uportconnect;
     const uport = new Connect('MyDApp');
     console.log('done');
 
     //TO DO: hide the uport wrapper and get the JWT
     uport.requestDisclosure({
-        requested: ['name', 'country'],
-        verified: ['Example', 'Diploma']
+        requested: simple,//['name', 'country'],
+        verified: verified//['Example', 'Diploma']
     })
 
     uport.onResponse('disclosureReq').then(res => {
