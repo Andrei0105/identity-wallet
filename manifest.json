@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "Identity Wallet",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Extension that makes using decentralized identities easier.",
   "permissions": [
     "activeTab",
     "declarativeContent",
