@@ -10,7 +10,7 @@ function requestPopup() {
     chrome.runtime.sendMessage({ type: "openPopup" });
 }
 
-window.pendingData = null;
+// window.pendingData = null;
 // Listener for message from in page script
 window.addEventListener('message', function (event) {
     message = event.data;
@@ -19,7 +19,8 @@ window.addEventListener('message', function (event) {
     }
     else if (message.type == 'iw-up-rc') {
         console.log('Message from inpage received:\n' + JSON.stringify(message));
-        window.pendingData = message;
+        chrome.storage.local.set({ 'requestedData': message });
+        // window.pendingData = messsage;
     }
     else if (message.type == 'open-popup') {
         console.log('CS: Open popup received.')
