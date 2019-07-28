@@ -11,13 +11,16 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 
 chrome.runtime.onMessage.addListener(
-  function (request, sender) {
-    if (request.type == 'openPopup') {
-      console.log('BG: received open popup from CS');
-      chrome.storage.local.set({ 'tab_id': sender.tab.id });
-      window.open("popup_fill.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
-    }
-    else {
-      console.log('BG: unrecognized message: ', request)
+  function (message, sender) {
+    console.log('BG:', 'Received message:', message);
+    switch (message.type) {
+      case 'openPopup':
+        {
+          chrome.storage.local.set({ 'tab_id': sender.tab.id });
+          window.open("popup_fill.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
+          break;
+        }
+      default:
+        console.warn('BG:', 'Unrecognized message: ', request)
     }
   });

@@ -1,42 +1,24 @@
-window.ext = {};
+window.iw = { name: 'identitywallet' }
 
-window.ext.x = function x() {
-    console.log(15);
+window.iw.requestUportClaims =
+    function requestUportClaims(event) {
+        data = event.data;
+        window.postMessage({
+            type: "iw-up-rc",
+            simple: data.simple,
+            verified: data.verified
+        });
+        iw.sendMessage('open-popup');
+    }
+
+window.iw.sendMessage = function sendMessage(type) {
+    switch (type) {
+        case 'open-popup':
+            window.postMessage({
+                type: "open-popup"
+            });
+            break;
+        default:
+            console.warn('Unrecognized message type.');
+    }
 }
-
-function createButton(func) {
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "Send";
-    button.onclick = func;
-    button.id = "div-btn";
-
-    var div = document.getElementById('div-button');
-    div.appendChild(button);
-}
-
-function onClickSend() {
-    console.log('func');
-    window.postMessage({
-        type: "uport-test",
-        message: "Message from the page"
-    }, "*")
-}
-
-function requestUportClaims(event) {
-    data = event.data;
-    window.postMessage({
-        type: "iw-up-rc",
-        simple: data.simple,
-        verified: data.verified
-    });
-    openPopup();
-}
-
-function openPopup() {
-    window.postMessage({
-        type: "open-popup"
-    });
-}
-
-createButton(onClickSend);

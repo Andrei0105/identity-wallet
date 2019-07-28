@@ -9,26 +9,21 @@
     <input name="name" type="text" id="name">
     <input name="country" type="text" id="country">
 
-    <div id='div-button'>
-    </div>
-    <div id='div-button'>
-    </div>
-
-    <button type="button" id='static_btn'>Static page button</button>
+    <button type="button" id='static_login_btn'>Login with IW</button>
 
     <script>
-        function checkVariable() {
-
-            if (typeof window.ext !== "undefined") {
-                console.log(window.ext.x())
+        function useIW() {
+            if (iw.name === 'identitywallet') {
                 $(document).ready(function () {
-                    $('#static_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] }, requestUportClaims);
+                    $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
+                        iw.requestUportClaims);
                 });
             }
+            else {
+                setTimeout(useIW, 50);
+            }
         }
-
-        setTimeout(checkVariable, 1000);
-
+        setTimeout(useIW, 50);
     </script>
 
 </body>

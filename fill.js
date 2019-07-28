@@ -1,33 +1,3 @@
-
-// chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-//     if (msg.action === "fillFields") {
-//         $("#name").val(msg.name)
-//         $("#country").val(msg.country)
-//     }
-// });
-
-function requestPopup() {
-    chrome.runtime.sendMessage({ type: "openPopup" });
-}
-
-// window.pendingData = null;
-// Listener for message from in page script
-window.addEventListener('message', function (event) {
-    message = event.data;
-    if (message.type == 'uport-test') {
-        console.log('Message from inpage received:\n' + JSON.stringify(message));
-    }
-    else if (message.type == 'iw-up-rc') {
-        console.log('Message from inpage received:\n' + JSON.stringify(message));
-        chrome.storage.local.set({ 'requestedData': message });
-        // window.pendingData = messsage;
-    }
-    else if (message.type == 'open-popup') {
-        console.log('CS: Open popup received.')
-        requestPopup();
-    }
-});
-
 function injectScript(file, node) {
     var th = document.getElementsByTagName(node)[0];
     var s = document.createElement('script');
@@ -38,39 +8,69 @@ function injectScript(file, node) {
 
 injectScript(chrome.extension.getURL('inpage.js'), 'head');
 
-function listenerAction(data, messageType) {
-    switch (messageType) {
-        case "requestData":
-            chrome.runtime.sendMessage(data);
-            break;
-        default:
-            break;
-    }
-}
+// window.pendingData = null;
 
+// Listener for messages from inpage.js (IS)
+window.addEventListener('message', function (event) {
+    message = event.data;
+    console.log('CS:', 'Message received:\n' + JSON.stringify(message));
+    switch (message.type) {
+        case 'iw-up-rc':
+            {
+                chrome.storage.local.set({ 'requestedData': message });
+                // window.pendingData = messsage;
+                break;
+            }
+        case 'open-popup':
+            {
+                isListenerAction({ type: 'openPopup' }, 'openPopup');
+                break;
+            }
+        default:
+            console.warn('CS:', 'Unrecognized message.');
+    }
+});
+
+// Listener for messages from popup (P)
 chrome.runtime.onMessage.addListener(
     function (message, sender, listenerAction) {
-        console.log(message);
+        console.log('CS:', 'Message received:\n' + JSON.stringify(message));
         switch (message.type) {
             case "requestData":
                 {
-                    console.log("CS: Received requestData");
-                    console.log("Pending data:", window.pendingData)
-                    listenerAction(pendingData, message.type);
+                    console.warn('Requesting data via messaging is deprecated.');
+                    pListenerAction(pendingData, message.type);
                 }
                 break;
             case "fillFields":
                 {
-                    console.log('fill');
-                    console.log(message)
                     $("#name").val(message.name);
                     $("#country").val(message.country);
                     break;
                 }
             default:
-                console.error("Unrecognised message: ", message);
+                console.warn('CS:', 'Unrecognised message: ', message);
         }
     }
-
 );
+
+function isListenerAction(data, messageType) {
+    switch (messageType) {
+        case 'openPopup':
+            chrome.runtime.sendMessage(data);
+            break;
+        default:
+    }
+}
+
+function pListenerAction(data, messageType) {
+    switch (messageType) {
+        case 'requestData':
+            chrome.runtime.sendMessage(data);
+            break;
+        default:
+    }
+}
+
+
 
