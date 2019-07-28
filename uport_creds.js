@@ -18,8 +18,8 @@ function useUport() {
         chrome.storage.local.get(['tab_id'], function (data) {
             tab_id = data.tab_id;
             chrome.storage.local.get(['requestedData'], function (data) {
-                simple = data.simple;
-                verified = data.verified;
+                simple = data.requestedData.simple;
+                verified = data.requestedData.verified;
                 console.log('BG:', 'Read data from storage: ', data);
                 window.test ? getCredsTester(tab_id, simple, verified) : getCreds(tab_id, simple, verified);
             });

@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(
       case 'openPopup':
         {
           chrome.storage.local.set({ 'tab_id': sender.tab.id });
-          window.open("popup_fill.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
+          window.open("popup_extension.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
       default:

@@ -24,7 +24,7 @@
       ],
       "run_at": "document_idle",
       "js": [
-        "fill.js",
+        "content.js",
         "libs/jquery.js"
       ]
     }
@@ -33,7 +33,7 @@
     "inpage.js"
   ],
   "browser_action": {
-    "default_popup": "popup_fill.html",
+    "default_popup": "popup_extension.html",
     "default_icon": {
       "16": "images/get_started16.png",
       "32": "images/get_started32.png",
