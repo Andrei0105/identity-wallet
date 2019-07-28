@@ -53,6 +53,8 @@ function getCredsTester(targetTabId, simple, verified) {
     console.log('P:', 'JSON response:\n' + jsonString)
     document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json.did
     chrome.tabs.sendMessage(targetTabId, { type: "fillFields", name: json.name, country: json.country });
+    // Test popup closing
+    self.close();
 }
 
 // Hiding the uPort wrapper on insertion using MutationObserver
