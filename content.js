@@ -46,6 +46,7 @@ chrome.runtime.onMessage.addListener(
                 {
                     $("#name").val(message.name);
                     $("#country").val(message.country);
+                    window.postMessage({type: 'uport-claims', claims: message.data}, '*');
                     break;
                 }
             default:

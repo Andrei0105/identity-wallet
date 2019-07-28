@@ -8,6 +8,7 @@ window.iw.requestUportClaims =
             simple: data.simple,
             verified: data.verified
         });
+        iw.addMessageListener();
         iw.sendMessage('open-popup');
     }
 
@@ -21,4 +22,18 @@ window.iw.sendMessage = function sendMessage(type) {
         default:
             console.warn('Unrecognized message type.');
     }
+}
+
+window.iw.addMessageListener = function addMessageListener() {
+    window.addEventListener('message', function (message) {
+        message = message.data;
+        console.log('IS:', 'Received message:', message);
+        switch (message.type) {
+            case 'uport-claims':
+                window.iw.requestedClaims = message.claims;
+                break;
+            default:
+                console.warn('IS:', 'Unrecognized message type received.');
+        }
+    }, true);
 }

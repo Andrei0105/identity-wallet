@@ -18,12 +18,22 @@
                     $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestUportClaims);
                 });
+                setTimeout(checkClaims, 500);
             }
             else {
                 setTimeout(useIW, 50);
             }
         }
         setTimeout(useIW, 50);
+
+        function checkClaims() {
+            if (typeof iw.requestedClaims !== 'undefined') {
+                console.log('PAGE:', 'Received claims:', iw.requestedClaims);
+            }
+            else {
+                setTimeout(checkClaims, 500);
+            }
+        }
     </script>
 
 </body>

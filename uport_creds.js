@@ -43,7 +43,7 @@ function getCreds(targetTabId, simple, verified) {
         qrImage = document.getElementById('qr-code')
         qrImage.remove()
         document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json.did
-        chrome.tabs.sendMessage(targetTabId, { type: "fillFields", name: json.name, country: json.country });
+        chrome.tabs.sendMessage(targetTabId, { type: "fillFields", name: json.name, country: json.country, data: json });
     })
 }
 
@@ -52,7 +52,7 @@ function getCredsTester(targetTabId, simple, verified) {
     jsonString = JSON.stringify(json)
     console.log('P:', 'JSON response:\n' + jsonString)
     document.querySelector('#msg').innerHTML = "Congratulations you are now <b>logged in</b>`.  Here is your DID identifier:  " + json.did
-    chrome.tabs.sendMessage(targetTabId, { type: "fillFields", name: json.name, country: json.country });
+    chrome.tabs.sendMessage(targetTabId, { type: "fillFields", name: json.name, country: json.country, data: json });
     // Test popup closing
     self.close();
 }
