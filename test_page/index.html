@@ -3,6 +3,18 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/blockstack@19.2.1/dist/blockstack.js"
+        integrity="sha384-+qYCYoUGzsMLAzHm80c4DyhbWgHBBb2N0RFqsg7Lws5ljtBtj/IwpgxZkiR7j7lp"
+        crossorigin="anonymous"></script>
+    <script>
+
+        // ar = blockstack.getAuthRequestFromURL()
+        var url = new URL(window.location.href);
+        var ar = url.searchParams.get("authResponse");
+        console.log(ar);
+        window.parent.postMessage({ auth_response: ar }, '*');
+
+    </script>
 </head>
 
 <body>
@@ -10,13 +22,18 @@
     <input name="country" type="text" id="country">
 
     <button type="button" id='static_login_btn'>Login with IW</button>
-
+    <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
+    <button type="button" id='signin-button'>Inpage blockstack test</button>
     <script>
         function useIW() {
             if (iw.name === 'identitywallet') {
                 $(document).ready(function () {
                     $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestUportClaims);
+                });
+                $(document).ready(function () {
+                    $('#static_login_btn_blockstack').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
+                        iw.requestBlockstackClaims);
                 });
                 setTimeout(checkClaims, 500);
             }
@@ -34,6 +51,18 @@
                 setTimeout(checkClaims, 500);
             }
         }
+
+        function useBlockstack() {
+            if (typeof window.blockstack !== "undefined") {
+                authReq = blockstack.makeAuthRequest();
+                document.getElementById('signin-button').addEventListener('click', function () {
+                    blockstack.redirectToSignInWithAuthRequest(authReq);
+                });
+
+            }
+        }
+
+        setTimeout(useBlockstack, 1000);
     </script>
 
 </body>

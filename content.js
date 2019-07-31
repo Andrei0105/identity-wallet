@@ -26,6 +26,11 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'openPopup' }, 'openPopup');
                 break;
             }
+        case 'r-blockstack-login':
+            {
+                isListenerAction({ type: 'blockstackLogin', auth: message.auth }, 'blockstackLogin');
+                break;
+            }
         default:
             console.warn('CS:', 'Unrecognized message.');
     }
@@ -46,7 +51,7 @@ chrome.runtime.onMessage.addListener(
                 {
                     $("#name").val(message.name);
                     $("#country").val(message.country);
-                    window.postMessage({type: 'uport-claims', claims: message.data}, '*');
+                    window.postMessage({ type: 'uport-claims', claims: message.data }, '*');
                     break;
                 }
             default:
@@ -58,6 +63,9 @@ chrome.runtime.onMessage.addListener(
 function isListenerAction(data, messageType) {
     switch (messageType) {
         case 'openPopup':
+            chrome.runtime.sendMessage(data);
+            break;
+        case 'blockstackLogin':
             chrome.runtime.sendMessage(data);
             break;
         default:

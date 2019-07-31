@@ -12,11 +12,25 @@ window.iw.requestUportClaims =
         iw.sendMessage('open-popup');
     }
 
+window.iw.requestBlockstackClaims =
+    function requestBlockstackClaims(event) {
+        data = event.data;
+        iw.sendMessage('r-blockstack-login');
+    }
+
 window.iw.sendMessage = function sendMessage(type) {
     switch (type) {
         case 'open-popup':
             window.postMessage({
                 type: "open-popup"
+            });
+            break;
+        case 'r-blockstack-login':
+            //generate auth request with the page's default parameters
+            authReq =  blockstack.makeAuthRequest();
+            window.postMessage({
+                type: "r-blockstack-login",
+                auth: authReq
             });
             break;
         default:
