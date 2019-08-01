@@ -7,11 +7,12 @@
         integrity="sha384-+qYCYoUGzsMLAzHm80c4DyhbWgHBBb2N0RFqsg7Lws5ljtBtj/IwpgxZkiR7j7lp"
         crossorigin="anonymous"></script>
     <script>
-
-        // ar = blockstack.getAuthRequestFromURL()
         var url = new URL(window.location.href);
         var ar = url.searchParams.get("authResponse");
-        console.log(ar);
+        
+        if(ar) {
+            console.log(ar);
+        }
         window.parent.postMessage({ auth_response: ar }, '*');
 
     </script>
@@ -26,7 +27,7 @@
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <script>
         function useIW() {
-            if (iw.name === 'identitywallet') {
+            if (typeof iw.name !== 'undefined') {
                 $(document).ready(function () {
                     $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestUportClaims);
@@ -56,6 +57,7 @@
             if (typeof window.blockstack !== "undefined") {
                 authReq = blockstack.makeAuthRequest();
                 document.getElementById('signin-button').addEventListener('click', function () {
+                    console.log('here')
                     blockstack.redirectToSignInWithAuthRequest(authReq);
                 });
 
