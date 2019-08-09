@@ -20,11 +20,13 @@ window.iw.requestBlockstackClaims =
 
 window.iw.initiateAriesConnection =
     function initiateAriesConnection(event) {
-        data = event.data;
-        window.postMessage({
-            type: "aries-connection-invite",
-            invitation: data.invitation
-        });
+        $.post('http://localhost:5050/connections/create-invitation', function (data, status, jqXHR) {
+            invitation = JSON.stringify(data.invitation);
+            window.postMessage({
+                type: "aries-connection-invite",
+                invitation: invitation
+            });
+        })
     }
 
 window.iw.sendMessage = function sendMessage(type) {

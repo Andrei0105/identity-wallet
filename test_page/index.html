@@ -9,8 +9,8 @@
     <script>
         var url = new URL(window.location.href);
         var ar = url.searchParams.get("authResponse");
-        
-        if(ar) {
+
+        if (ar) {
             console.log(ar);
         }
         window.parent.postMessage({ auth_response: ar }, '*');
@@ -27,6 +27,7 @@
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
     <script>
+
         function useIW() {
             if (typeof iw.name !== 'undefined') {
                 $(document).ready(function () {
@@ -38,15 +39,7 @@
                         iw.requestBlockstackClaims);
                 });
                 $(document).ready(function () {
-                    $('#aries-connect-button').click({ invitation: JSON.stringify({
-    "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/invitation",
-    "@id": "3d84ae20-50a5-4382-924d-f20fdae3a940",
-    "recipientKeys": [
-      "Fx7q1Wh8TwiUmu2QUVNav9dVDiB87ccnKkdpC523Um52"
-    ],
-    "label": "aca1",
-    "serviceEndpoint": "http://0.0.0.0:9010"
-  }) },
+                    $('#aries-connect-button').click({ endpoint: 'http://localhost:5050'},
                         iw.initiateAriesConnection);
                 });
                 setTimeout(checkClaims, 500);
