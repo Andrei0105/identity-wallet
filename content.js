@@ -31,6 +31,18 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'blockstackLogin', auth: message.auth }, 'blockstackLogin');
                 break;
             }
+        case 'aries-connection-invite':
+            {
+                // isListenerAction({ type: 'ariesConnectionInvite', invitation: message.invitation }, 'ariesConnectionInvite');
+                console.log(message.invitation)
+                $.post('http://localhost:5051/connections/receive-invitation', message.invitation, function(data, status, jqXHR) {
+                    connection_id = data.connection_id;
+                    $.get('http://localhost:5051/connections/' + connection_id, function(data, status, jqXHR) {
+                        console.log(data);
+                })
+                })
+                break;
+            }
         default:
             console.warn('CS:', 'Unrecognized message.');
     }

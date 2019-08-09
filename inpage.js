@@ -18,6 +18,15 @@ window.iw.requestBlockstackClaims =
         iw.sendMessage('r-blockstack-login');
     }
 
+window.iw.initiateAriesConnection =
+    function initiateAriesConnection(event) {
+        data = event.data;
+        window.postMessage({
+            type: "aries-connection-invite",
+            invitation: data.invitation
+        });
+    }
+
 window.iw.sendMessage = function sendMessage(type) {
     switch (type) {
         case 'open-popup':
@@ -27,7 +36,7 @@ window.iw.sendMessage = function sendMessage(type) {
             break;
         case 'r-blockstack-login':
             //generate auth request with the page's default parameters
-            authReq =  blockstack.makeAuthRequest();
+            authReq = blockstack.makeAuthRequest();
             window.postMessage({
                 type: "r-blockstack-login",
                 auth: authReq
