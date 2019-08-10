@@ -543,3 +543,78 @@ Agent2 will automatically respond. To view the received proof, use on Agent1 GET
   "created_at": "2019-08-08 17:09:05.830181Z"
 }
 ```
+# Full connection protocol
+Connecting 2 agents without ```--auto-accept-invites --auto-accept-requests```.\
+The step 'Connecting the two agents' from above remains the same. After performing this step, the connection invitation is stored by Agent2.
+## Accepting the invitation
+On Agent2, use the POST /connections/{id}/accept-invitation endpoint, using the id of the stored connection invitation.\
+The state of the connection will become 'request'.
+```
+{
+  "state": "request",
+  "routing_state": "none",
+  "my_did": "VwCnhNdp92b94r5gtyi7nS",
+  "their_label": "aca1",
+  "initiator": "external",
+  "connection_id": "387d8294-78fb-4622-a90d-8173190c9f9e",
+  "updated_at": "2019-08-10 17:51:40.670745Z",
+  "invitation_key": "ESRUvpwsxnoN3BQH76f9h7ghL8cjXMcpB7nkwGB3CbxW",
+  "accept": "manual",
+  "request_id": "8d12fb22-db27-4950-aeaa-f828062039ee",
+  "created_at": "2019-08-10 15:19:18.031911Z"
+}
+```
+## Accepting the request
+On Agent1, the request must be accepted using POST /connections/{id}/accept-request. The response will look like the following:
+```
+{
+  "accept": "manual",
+  "my_did": "2jmGdUYkedrvru6qWo42Zh",
+  "their_did": "VwCnhNdp92b94r5gtyi7nS",
+  "their_label": "aca2",
+  "updated_at": "2019-08-10 17:57:55.104705Z",
+  "state": "response",
+  "created_at": "2019-08-10 15:18:24.778365Z",
+  "invitation_key": "ESRUvpwsxnoN3BQH76f9h7ghL8cjXMcpB7nkwGB3CbxW",
+  "initiator": "self",
+  "routing_state": "none",
+  "connection_id": "be3700a7-0313-4995-9c46-72a4608b5c49"
+}
+```
+## Checking the state of the connection
+Now the connection should be active. We check the status on both agents using GET /connections/{id}.\
+On Agent1:
+```
+{
+  "accept": "manual",
+  "my_did": "2jmGdUYkedrvru6qWo42Zh",
+  "their_did": "VwCnhNdp92b94r5gtyi7nS",
+  "their_label": "aca2",
+  "updated_at": "2019-08-10 17:57:55.667862Z",
+  "state": "active",
+  "created_at": "2019-08-10 15:18:24.778365Z",
+  "invitation_key": "ESRUvpwsxnoN3BQH76f9h7ghL8cjXMcpB7nkwGB3CbxW",
+  "initiator": "self",
+  "routing_state": "none",
+  "connection_id": "be3700a7-0313-4995-9c46-72a4608b5c49"
+}
+```
+On Agent2:
+```
+{
+  "state": "active",
+  "routing_state": "none",
+  "my_did": "VwCnhNdp92b94r5gtyi7nS",
+  "their_label": "aca1",
+  "initiator": "external",
+  "connection_id": "387d8294-78fb-4622-a90d-8173190c9f9e",
+  "updated_at": "2019-08-10 17:57:55.833026Z",
+  "invitation_key": "ESRUvpwsxnoN3BQH76f9h7ghL8cjXMcpB7nkwGB3CbxW",
+  "accept": "manual",
+  "request_id": "8d12fb22-db27-4950-aeaa-f828062039ee",
+  "their_did": "2jmGdUYkedrvru6qWo42Zh",
+  "created_at": "2019-08-10 15:19:18.031911Z"
+}
+```
+Note: The connection ID is local for each agent.\
+The connection's state is now ```active``` on both agents.
