@@ -24,8 +24,10 @@ window.iw.initiateAriesConnection =
             type: "aries-connection-invite",
             invitation: event.data.invitation
         });
+        iw.addMessageListener();
     }
 
+// Send message to content script (CS)
 window.iw.sendMessage = function sendMessage(type) {
     switch (type) {
         case 'open-popup':
@@ -46,6 +48,7 @@ window.iw.sendMessage = function sendMessage(type) {
     }
 }
 
+// Listener for messages from content script (CS)
 window.iw.addMessageListener = function addMessageListener() {
     window.addEventListener('message', function (message) {
         message = message.data;
@@ -54,6 +57,16 @@ window.iw.addMessageListener = function addMessageListener() {
             case 'uport-claims':
                 window.iw.requestedClaims = message.claims;
                 break;
+            case 'aries_connection_status':
+                {
+                    if (message.status === 'accepted')
+                        window.iw.ariesConnectionAccepted = true;
+                    else if (message.status === 'rejected')
+                        window.iw.ariesConnectionAccepted = false;
+                    else
+                        console.warn('Unknown response status');
+                    break;
+                }
             default:
                 console.warn('IS:', 'Unrecognized message type received.');
         }

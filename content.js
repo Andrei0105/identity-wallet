@@ -33,13 +33,14 @@ window.addEventListener('message', function (event) {
             }
         case 'aries-connection-invite':
             {
-                // isListenerAction({ type: 'ariesConnectionInvite', invitation: message.invitation }, 'ariesConnectionInvite');
-                chrome.storage.local.get(['aries_endpoint'], function (data) {
-                    $.post(data.aries_endpoint + '/connections/receive-invitation', message.invitation, function (data, status, jqXHR) {
-                        connection_id = data.connection_id;
-                        console.log(data);
-                    })
-                });
+                isListenerAction({ type: 'ariesConnectionInvite', invitation: message.invitation }, 'ariesConnectionInvite');
+                // chrome.storage.local.get(['aries_endpoint'], function (data) {
+                //     $.post(data.aries_endpoint + '/connections/receive-invitation', message.invitation, function (data, status, jqXHR) {
+                //         connection_id = data.connection_id;
+                //         console.log(data);
+                //     })
+                // });
+
                 break;
             }
         default:
@@ -65,6 +66,11 @@ chrome.runtime.onMessage.addListener(
                     window.postMessage({ type: 'uport-claims', claims: message.data }, '*');
                     break;
                 }
+            case 'aries_connection':
+                {
+                    window.postMessage({type: 'aries_connection_status', status: message.status}, '*');
+                    break;
+                }
             default:
                 console.warn('CS:', 'Unrecognised message: ', message);
         }
@@ -74,11 +80,9 @@ chrome.runtime.onMessage.addListener(
 function isListenerAction(data, messageType) {
     switch (messageType) {
         case 'openPopup':
-            chrome.runtime.sendMessage(data);
-            break;
         case 'blockstackLogin':
+        case 'ariesConnectionInvite':
             chrome.runtime.sendMessage(data);
-            break;
         default:
     }
 }
