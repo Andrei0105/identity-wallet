@@ -28,8 +28,19 @@
     <button type="button" id='aries-connect-button'>Aries connect</button>
     <script>
 
+        function getInvitation() {
+            // generate a connection invitation on the page's agent
+            // this should be managed by the page
+            var jqXHR = $.ajax({
+                type: 'POST',
+                url: 'http://localhost:5050/connections/create-invitation',
+                async: false
+            });
+            return JSON.stringify(jqXHR.responseJSON.invitation);
+        }
+
         function useIW() {
-            if (typeof iw.name !== 'undefined') {
+            if (typeof iw !== 'undefined') {
                 $(document).ready(function () {
                     $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestUportClaims);
@@ -39,7 +50,7 @@
                         iw.requestBlockstackClaims);
                 });
                 $(document).ready(function () {
-                    $('#aries-connect-button').click({ endpoint: 'http://localhost:5050'},
+                    $('#aries-connect-button').click({ invitation: getInvitation() },
                         iw.initiateAriesConnection);
                 });
                 setTimeout(checkClaims, 500);
