@@ -16,7 +16,7 @@ function acceptInvitation() {
                         console.log(data);
                         chrome.tabs.sendMessage(storageData.tab_id, { type: 'aries_connection', status: 'accepted' });
                         self.close();
-                    })
+                    });
             });
     });
 }

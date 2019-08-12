@@ -48,27 +48,31 @@ window.iw.sendMessage = function sendMessage(type) {
     }
 }
 
+function csListener(message) {
+    message = message.data;
+    console.log('IS:', 'Received message:', message);
+    switch (message.type) {
+        case 'uport-claims':
+            window.iw.requestedClaims = message.claims;
+            break;
+        case 'aries_connection_status':
+            {
+                if (message.status === 'accepted')
+                    window.iw.ariesConnectionAccepted = true;
+                else if (message.status === 'rejected')
+                    window.iw.ariesConnectionAccepted = false;
+                else
+                    console.warn('Unknown response status');
+                break;
+            }
+        default:
+            console.warn('IS:', 'Unrecognized message type received.');
+    }
+}
+
 // Listener for messages from content script (CS)
 window.iw.addMessageListener = function addMessageListener() {
-    window.addEventListener('message', function (message) {
-        message = message.data;
-        console.log('IS:', 'Received message:', message);
-        switch (message.type) {
-            case 'uport-claims':
-                window.iw.requestedClaims = message.claims;
-                break;
-            case 'aries_connection_status':
-                {
-                    if (message.status === 'accepted')
-                        window.iw.ariesConnectionAccepted = true;
-                    else if (message.status === 'rejected')
-                        window.iw.ariesConnectionAccepted = false;
-                    else
-                        console.warn('Unknown response status');
-                    break;
-                }
-            default:
-                console.warn('IS:', 'Unrecognized message type received.');
-        }
-    }, true);
+    // Remove the listener if it was previously set
+    window.removeEventListener('message', csListener, true);
+    window.addEventListener('message', csListener, true);
 }

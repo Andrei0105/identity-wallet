@@ -36,6 +36,7 @@
                 url: 'http://localhost:5050/connections/create-invitation',
                 async: false
             });
+            window.requestedConnectionId = jqXHR.responseJSON.connection_id.toString();
             return JSON.stringify(jqXHR.responseJSON.invitation);
         }
 
@@ -48,7 +49,7 @@
                         iw.requestBlockstackClaims);
                     $('#aries-connect-button').click({ invitation: getInvitation() },
                         iw.initiateAriesConnection);
-                    setTimeout(checkClaims, 500);
+                    setTimeout(useResponseAction, 500);
                 });
             }
             else {
@@ -57,15 +58,44 @@
         }
         setTimeout(useIW, 50);
 
-        function checkClaims() {
+        function useResponseAction() {
+            // Everything happening in this function should be managed by the page
+            // without any interaction with the extension
             if (typeof iw.requestedClaims !== 'undefined') {
+                // Check uPort received claims
                 console.log('PAGE:', 'Received claims:', iw.requestedClaims);
             }
             else if (typeof iw.ariesConnectionAccepted !== 'undefined') {
-                console.log('PAGE:', 'Aries connection accepted?', iw.ariesConnectionAccepted)
+                if (iw.ariesConnectionAccepted) {
+                    // Check Aries user response
+                    // This is an example. The request should be issued from the page's backend
+                    console.log('PAGE:', 'Aries connection accepted?', iw.ariesConnectionAccepted)
+                    state = ''
+                    function getState() {
+                        $.get('http://localhost:5050/connections/' + window.requestedConnectionId,
+                            function (data, status, jqXHR) {
+                                state = data.state;
+                                console.log('PAGE:', 'Checking connection state: ', state);
+                                if (state !== 'request')
+                                    setTimeout(getState, 1000);
+                                else {
+                                    $.post('http://localhost:5050/connections/' + window.requestedConnectionId + '/accept-request',
+                                        function (data, status, jqXHR) {
+                                            // At this point, the response should have state 'response'
+                                            // The connection is active, the page can check by issuing a GET /connections
+                                            console.log('PAGE:', 'Page agent issuing accept-request. Response: ', data);
+                                        });
+                                }
+                            });
+                    }
+                    setTimeout(getState, 1000);
+                }
+                else if (iw.ariesConnectionAccepted === false) {
+                    console.log('PAGE:', 'User rejected the Aries connection.');
+                }
             }
             else {
-                setTimeout(checkClaims, 500);
+                setTimeout(useResponseAction, 500);
             }
         }
 
