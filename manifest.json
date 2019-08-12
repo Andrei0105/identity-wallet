@@ -10,7 +10,7 @@
     "http://*/*",
     "https://*/*"
   ],
-  "options_page": "options.html",
+  "options_page": "popups/options.html",
   "background": {
     "scripts": [
       "background.js"
@@ -33,7 +33,7 @@
     "inpage.js"
   ],
   "browser_action": {
-    "default_popup": "popup_extension.html",
+    "default_popup": "popups/popup_default.html",
     "default_icon": {
       "16": "images/get_started16.png",
       "32": "images/get_started32.png",
