@@ -2,19 +2,35 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="../libs/jquery.js"></script>
+    <script src="js/popup_default.js"></script>
+    <meta charset="utf-8">
     <style>
         body {
             min-width: 300px;
             min-height: 400px;
+            background-color: #eee;
         }
     </style>
 </head>
 
 <body id="body">
-    <div id="msg">
-        The default popup. Most likely to integrate the Indy connection management.
+    <div class="container">
+        <h2>Indy Connections</h2>
+        <table class="table table-dark table-striped" id="connections_table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-    <script src="js/popup_default.js"></script>
+
 </body>
 
 </html>
