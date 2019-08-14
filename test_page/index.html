@@ -26,6 +26,7 @@
     <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
+    <button type="button" id='aries-credential-button'>Get Aries credential</button>
     <script>
 
         function getInvitation() {
@@ -40,6 +41,38 @@
             return JSON.stringify(jqXHR.responseJSON.invitation);
         }
 
+        function startCredentialExchangeAndGetUpdatedAt() {
+            // creating the public DID, the Schema and the Credential def
+            // should be managed by the page's agent;
+            // on user interaction to request a credential, the page's agent
+            // should use /credential-exchage/send to start a cred exchange;
+            // the credential exchange id must be sent to the page
+            var jqXHR = $.ajax({
+                type: 'POST',
+                url: 'http://localhost:5050/credential_exchange/send',
+                // hardcoded test credential exchange
+                data: '{\
+  "credential_values": {"name": "Alice Smith", "age": "24"},\
+  "credential_definition_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:13:default",\
+  "connection_id": "8af9397f-2e95-4ba1-a905-0f045e09823f"\
+}',
+                async: false
+            });
+            console.log('Generated credential exchange:', jqXHR.responseJSON)
+            return jqXHR.responseJSON.created_at;
+        }
+
+        function initiateAriesConnectionWrapper() {
+            invitation = getInvitation();
+            console.log(invitation);
+            iw.initiateAriesConnection({ data: { invitation: invitation } });
+        }
+
+        function notifyCredentialRequestWrapper() {
+            credential_created_at = startCredentialExchangeAndGetUpdatedAt();
+            iw.notifyCredentialRequest({ data: { credential_created_at: credential_created_at } });
+        }
+
         function useIW() {
             if (typeof iw !== 'undefined') {
                 $(document).ready(function () {
@@ -47,9 +80,9 @@
                         iw.requestUportClaims);
                     $('#static_login_btn_blockstack').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestBlockstackClaims);
-                    $('#aries-connect-button').click({ invitation: getInvitation() },
-                        iw.initiateAriesConnection);
-                    setTimeout(useResponseAction, 500);
+                    $('#aries-connect-button').click(initiateAriesConnectionWrapper);
+                    $('#aries-credential-button').click(notifyCredentialRequestWrapper);
+                    setTimeout(userResponseAction, 500);
                 });
             }
             else {
@@ -58,7 +91,7 @@
         }
         setTimeout(useIW, 50);
 
-        function useResponseAction() {
+        function userResponseAction() {
             // Everything happening in this function should be managed by the page
             // without any interaction with the extension
             if (typeof iw.requestedClaims !== 'undefined') {
@@ -95,7 +128,7 @@
                 }
             }
             else {
-                setTimeout(useResponseAction, 500);
+                setTimeout(userResponseAction, 500);
             }
         }
 

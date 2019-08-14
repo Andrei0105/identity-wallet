@@ -36,6 +36,11 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'ariesConnectionInvite', invitation: message.invitation }, 'ariesConnectionInvite');
                 break;
             }
+        case 'aries-credential-request-initiated':
+            {
+                isListenerAction({ type: 'ariesCredentialExchangeStart', credential_created_at: message.credential_created_at }, 'ariesCredentialExchangeStart');
+                break;
+            }
         default:
             console.warn('CS:', 'Unrecognized message.');
     }
@@ -61,7 +66,7 @@ chrome.runtime.onMessage.addListener(
                 }
             case 'aries_connection':
                 {
-                    window.postMessage({type: 'aries_connection_status', status: message.status}, '*');
+                    window.postMessage({ type: 'aries_connection_status', status: message.status }, '*');
                     break;
                 }
             default:
@@ -75,6 +80,7 @@ function isListenerAction(data, messageType) {
         case 'openPopup':
         case 'blockstackLogin':
         case 'ariesConnectionInvite':
+        case 'ariesCredentialExchangeStart':
             chrome.runtime.sendMessage(data);
         default:
     }

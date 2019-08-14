@@ -30,7 +30,13 @@ chrome.runtime.onMessage.addListener(
       case 'ariesConnectionInvite':
         {
           chrome.storage.local.set({ 'aries_invitation': message.invitation, 'tab_id': sender.tab.id });
-          window.open("popups/popup_aries.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no"); 
+          window.open("popups/popup_aries.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
+          break;
+        }
+      case 'ariesCredentialExchangeStart':
+        {
+          chrome.storage.local.set({ 'aries_credential_created_at': message.credential_created_at, 'tab_id': sender.tab.id });
+          window.open("popups/popup_aries_credential.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
       default:

@@ -27,6 +27,15 @@ window.iw.initiateAriesConnection =
         iw.addMessageListener();
     }
 
+window.iw.notifyCredentialRequest =
+    function notifyCredentialRequest(event) {
+        window.postMessage({
+            type: "aries-credential-request-initiated",
+            credential_created_at: event.data.credential_created_at
+        });
+        // iw.addMessageListener();
+    }
+
 // Send message to content script (CS)
 window.iw.sendMessage = function sendMessage(type) {
     switch (type) {
