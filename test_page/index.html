@@ -97,8 +97,9 @@
             if (typeof iw.requestedClaims !== 'undefined') {
                 // Check uPort received claims
                 console.log('PAGE:', 'Received claims:', iw.requestedClaims);
+                iw.requestedClaims = undefined;
             }
-            else if (typeof iw.ariesConnectionAccepted !== 'undefined') {
+            if (typeof iw.ariesConnectionAccepted !== 'undefined') {
                 if (iw.ariesConnectionAccepted) {
                     // Check Aries user response
                     // This is an example. The request should be issued from the page's backend
@@ -126,10 +127,24 @@
                 else if (iw.ariesConnectionAccepted === false) {
                     console.log('PAGE:', 'User rejected the Aries connection.');
                 }
+                iw.ariesConnectionAccepted = undefined;
             }
-            else {
-                setTimeout(userResponseAction, 500);
+            if (typeof iw.ariesCredentialAccepted !== 'undefined') {
+                if (iw.ariesCredentialAccepted) {
+                    // Check Aries credential issue response
+                    // This is not required. The page's agent can do nothing more now
+                    // The page can ignore the value if it doesn't require to check
+                    // if the user accepted the credential
+                    // If the user rejected it, the page can check the value and
+                    // then promp the user again
+                    console.log('PAGE:', 'Aries credential accepted?', iw.ariesCredentialAccepted)
+                }
+                else if (iw.ariesCredentialAccepted === false) {
+                    console.log('PAGE:', 'User rejected the Aries credential.');
+                }
+                iw.ariesCredentialAccepted = undefined;
             }
+            setTimeout(userResponseAction, 500);
         }
 
         function useBlockstack() {

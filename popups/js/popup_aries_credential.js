@@ -1,5 +1,6 @@
 function displayCredential() {
-    chrome.storage.local.get(['aries_credential_created_at', 'aries_endpoint'], async function (storageData) {
+    chrome.storage.local.get(['aries_credential_created_at', 'aries_endpoint', 'tab_id'], async function (storageData) {
+        window.tab_id = storageData.tab_id;
         window.credential_created_at = storageData.aries_credential_created_at;
         window.aries_endpoint = storageData.aries_endpoint;
         newest_cred_exchange = undefined;
@@ -41,12 +42,14 @@ async function acceptCredential() {
     await $.post(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id + '/store',
     function (data, status, jqXHR) {
         console.log('Stored credential. Response:', data);
+        chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'accepted' });
     });
     self.close();
     // });
 }
 
 function rejectCredential() {
+    chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'rejected' });
     self.close();
 }
 

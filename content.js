@@ -69,6 +69,11 @@ chrome.runtime.onMessage.addListener(
                     window.postMessage({ type: 'aries_connection_status', status: message.status }, '*');
                     break;
                 }
+            case 'aries_credential':
+                {
+                    window.postMessage({ type: 'aries_credential_status', status: message.status }, '*');
+                    break;
+                }
             default:
                 console.warn('CS:', 'Unrecognised message: ', message);
         }
