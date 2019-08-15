@@ -57,8 +57,14 @@ async function acceptPresentationRequest() {
     self.close();
 }
 
+function rejectPresentationRequest() {
+    chrome.tabs.sendMessage(window.tab_id, { type: 'aries_proof_request', status: 'rejected' });
+    self.close();
+}
+
 $(document).ready(function () {
     $('#aries_accept').click(acceptPresentationRequest);
+    $('#aries_reject').click(rejectPresentationRequest);
     displayProof();
 });
 
