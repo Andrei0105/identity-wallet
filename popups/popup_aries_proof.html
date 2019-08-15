@@ -2,6 +2,10 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="../libs/jquery.js"></script>
+    <script src="js/popup_aries_proof.js"></script>
+    <meta charset="utf-8">
     <style>
         body {
             min-width: 300px;
@@ -11,12 +15,15 @@
 </head>
 
 <body id="body">
-    The following proof request was received:
-    <div id="msg"></div>
-    <button type="button" id='aries_accept'>Accept</button>
-    <button type="button" id='aries_reject'>Reject</button>
-    <script src="../libs/jquery.js"></script>
-    <script src="js/popup_aries_proof.js"></script>
+    <div class="w-100" style="background-color: #eee;">
+        The following proof request was received:
+        <p class="text-center" id="msg"></p>
+
+        <div class="text-center">
+            <button class="btn btn-primary" type="button" id='aries_accept'>Accept</button>
+            <button class="btn btn-secondary" type="button" id='aries_reject'>Reject</button>
+        </div>
+    </div>
 </body>
 
 </html>
