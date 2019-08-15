@@ -33,7 +33,16 @@ window.iw.notifyCredentialRequest =
             type: "aries-credential-request-initiated",
             credential_created_at: event.data.credential_created_at
         });
-        // iw.addMessageListener();
+        iw.addMessageListener();
+    }
+
+window.iw.notifyProofRequest =
+    function notifyProofRequest(event) {
+        window.postMessage({
+            type: "aries-proof-request-initiated",
+            proof_request_created_at: event.data.proof_request_created_at
+        });
+        iw.addMessageListener();
     }
 
 // Send message to content script (CS)

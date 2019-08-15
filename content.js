@@ -41,6 +41,11 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'ariesCredentialExchangeStart', credential_created_at: message.credential_created_at }, 'ariesCredentialExchangeStart');
                 break;
             }
+        case 'aries-proof-request-initiated':
+            {
+                isListenerAction({ type: 'ariesProofExchangeStart', proof_request_created_at: message.proof_request_created_at }, 'ariesProofExchangeStart');
+                break;
+            }
         default:
             console.warn('CS:', 'Unrecognized message.');
     }
@@ -86,6 +91,7 @@ function isListenerAction(data, messageType) {
         case 'blockstackLogin':
         case 'ariesConnectionInvite':
         case 'ariesCredentialExchangeStart':
+        case 'ariesProofExchangeStart':
             chrome.runtime.sendMessage(data);
         default:
     }

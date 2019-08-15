@@ -27,6 +27,7 @@
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
     <button type="button" id='aries-credential-button'>Get Aries credential</button>
+    <button type="button" id='aries-proof-button'>Present Aries proof</button>
     <script>
 
         function getInvitation() {
@@ -62,6 +63,41 @@
             return jqXHR.responseJSON.created_at;
         }
 
+        function startProofExchangeAndGetUpdatedAt() {
+            // 
+            var jqXHR = $.ajax({
+                type: 'POST',
+                url: 'http://localhost:5050/presentation_exchange/send_request',
+                // hardcoded example proof request
+                data: '{\
+  "requested_predicates": [\
+    {\
+      "name": "age",\
+      "p_type": ">=",\
+      "restrictions": [\
+        {"cred_def_id" : "UDyb3ptnV9wwi95no6MHvU:3:CL:13:default"}\
+      ],\
+      "p_value":  18\
+    }\
+  ],\
+  "requested_attributes": [\
+    {\
+      "name": "name",\
+      "restrictions": [\
+        {"cred_def_id" : "UDyb3ptnV9wwi95no6MHvU:3:CL:13:default"}\
+      ]\
+    }\
+  ],\
+  "name": "Proof of Age",\
+  "version": "1.0",\
+  "connection_id": "8af9397f-2e95-4ba1-a905-0f045e09823f"\
+}',
+                async: false
+            });
+            console.log('Generated proof requestexchange:', jqXHR.responseJSON)
+            return Date.now().toString();
+        }
+
         function initiateAriesConnectionWrapper() {
             invitation = getInvitation();
             console.log(invitation);
@@ -73,6 +109,11 @@
             iw.notifyCredentialRequest({ data: { credential_created_at: credential_created_at } });
         }
 
+        function notifyProofRequestWrapper() {
+            proof_request_created_at = startProofExchangeAndGetUpdatedAt();
+            iw.notifyProofRequest({ data: { proof_request_created_at: proof_request_created_at } });
+        }
+
         function useIW() {
             if (typeof iw !== 'undefined') {
                 $(document).ready(function () {
@@ -82,6 +123,7 @@
                         iw.requestBlockstackClaims);
                     $('#aries-connect-button').click(initiateAriesConnectionWrapper);
                     $('#aries-credential-button').click(notifyCredentialRequestWrapper);
+                    $('#aries-proof-button').click(notifyProofRequestWrapper);
                     setTimeout(userResponseAction, 500);
                 });
             }
