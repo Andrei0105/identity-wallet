@@ -94,7 +94,8 @@
 }',
                 async: false
             });
-            console.log('Generated proof requestexchange:', jqXHR.responseJSON)
+            window.generatedPresentationRequestId = jqXHR.responseJSON.presentation_exchange_id
+            console.log('Generated proof request:', jqXHR.responseJSON)
             return Date.now().toString();
         }
 
@@ -185,6 +186,26 @@
                     console.log('PAGE:', 'User rejected the Aries credential.');
                 }
                 iw.ariesCredentialAccepted = undefined;
+            }
+            if (typeof iw.ariesProofRequestAccepted !== 'undefined') {
+                if (iw.ariesProofRequestAccepted) {
+                    console.log('PAGE:', 'Aries proof request accepted?', iw.ariesProofRequestAccepted)
+                    function getState() {
+                        $.get('http://localhost:5050/presentation_exchange/' + window.generatedPresentationRequestId,
+                            function (data, status, jqXHR) {
+                                state = data.state;
+                                console.log('PAGE:', 'Checking proof request state: ', state);
+                                console.log('PAGE:', 'Proof request: ', data);
+                                if (state !== 'verified')
+                                    setTimeout(getState, 1000);
+                            });
+                    }
+                    setTimeout(getState, 1000);
+                }
+                else if (iw.ariesProofRequestAccepted === false) {
+                    console.log('PAGE:', 'User rejected the Aries presentation request.');
+                }
+                iw.ariesProofRequestAccepted = undefined;
             }
             setTimeout(userResponseAction, 500);
         }

@@ -93,6 +93,16 @@ function csListener(message) {
                     console.warn('Unknown response status');
                 break;
             }
+        case 'aries_proof_request_status':
+            {
+                if (message.status === 'accepted')
+                    window.iw.ariesProofRequestAccepted = true;
+                else if (message.status === 'rejected')
+                    window.iw.ariesProofRequestAccepted = false;
+                else
+                    console.warn('Unknown response status');
+                break;
+            }
         default:
             console.warn('IS:', 'Unrecognized message type received.');
     }

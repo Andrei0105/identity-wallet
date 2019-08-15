@@ -18,12 +18,47 @@ function displayProof() {
                     });
                 });
         }
+        console.log(newest_presentation_exchange)
+        ////// temporary for testing
+        window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)[0]
+        window.pred_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_predicates)[0]
+        //////
         window.aries_presentation_exchange_id = newest_presentation_exchange.presentation_exchange_id;
         document.querySelector('#msg').innerHTML = JSON.stringify(newest_presentation_exchange);
     });
 }
 
+function createPresentation() {
+    // return hardcoded presentation for testing
+    return '{\
+        "self_attested_attributes": {},\
+        "requested_attributes": {\
+            "' + window.attr_ref + '": {\
+                "cred_id": "c0d97166-b9a7-4f87-8bcb-689cf862ebfa",\
+                "revealed": true\
+            }\
+        },\
+        "requested_predicates": {\
+            "' + window.pred_ref + '": {\
+                "cred_id": "c0d97166-b9a7-4f87-8bcb-689cf862ebfa"\
+            }\
+        }\
+    }'
+}
+
+async function sendPresentation(presentation) {
+    response = await $.post(window.aries_endpoint + '/presentation_exchange/' + window.aries_presentation_exchange_id + '/send_presentation', presentation)
+    console.log('Presentation sent. Response:', response);
+    chrome.tabs.sendMessage(window.tab_id, { type: 'aries_proof_request', status: 'accepted' });
+}
+
+async function acceptPresentationRequest() {
+    await sendPresentation(createPresentation());
+    self.close();
+}
+
 $(document).ready(function () {
+    $('#aries_accept').click(acceptPresentationRequest);
     displayProof();
 });
 
