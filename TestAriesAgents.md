@@ -1227,18 +1227,55 @@ On Agent2, the received presentation_exchange will look like this:
     "initiator": "external"
 }
 ```
+Agent2 has to search his wallet for credentials that can fill the presentation. The response will look like the following:
+```
+[
+    {
+        "cred_info": {
+            "referent": "d78f8ba2-7971-4155-866b-ba98e4842642",
+            "attrs": {
+                "name": "Alice"
+            },
+            "schema_id": "UDyb3ptnV9wwi95no6MHvU:2:name schema:0.0.1",
+            "cred_def_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:16:default",
+            "rev_reg_id": null,
+            "cred_rev_id": null
+        },
+        "interval": null,
+        "presentation_referents": [
+            "d0e1c129-159a-472f-a53c-67ca9f3b07ea"
+        ]
+    },
+    {
+        "cred_info": {
+            "referent": "be682fe5-8fe0-44dd-9399-0cc57d503b31",
+            "attrs": {
+                "age": "20"
+            },
+            "schema_id": "UDyb3ptnV9wwi95no6MHvU:2:age schema:0.0.1",
+            "cred_def_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:15:default",
+            "rev_reg_id": null,
+            "cred_rev_id": null
+        },
+        "interval": null,
+        "presentation_referents": [
+            "b099c219-3758-4c58-82f0-31ff663450d5"
+        ]
+    }
+]
+```
 Following the flow described above, Agent2 will respond with the following presentation which will then be received and verified on Agent1:
 ```
 {
     "self_attested_attributes": {},
     "requested_attributes": {
-        "0c7f1f21-ab7c-4c3b-ab51-9fa999df1095": {
+        "d0e1c129-159a-472f-a53c-67ca9f3b07ea": {
             "cred_id": "d78f8ba2-7971-4155-866b-ba98e4842642",
             "revealed": true
         }
     },
     "requested_predicates": {
-        "2d64df62-82de-4dbb-bd7b-7f1224b8a74f": {
+        "b099c219-3758-4c58-82f0-31ff663450d5": {
             "cred_id": "be682fe5-8fe0-44dd-9399-0cc57d503b31"
         }
     }
