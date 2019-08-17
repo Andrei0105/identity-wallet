@@ -1100,3 +1100,184 @@ Since on Agent1 we still use ```--auto-verify-presentation``` the proof will be 
 }
 ```
 Note: Verification of the proof is done by Agent1 without any interaction from Agent2.
+
+# Proofs made up of multiple credentials
+First we create 2 schemas, and the corresponding credential definitions with the desired attributes:
+Schema 1:
+```
+{
+  "schema_version": "0.0.1",
+  "attributes": [
+    "age"
+  ],
+  "schema_name": "age schema"
+}
+```
+Response:
+```
+{
+  "schema_id": "UDyb3ptnV9wwi95no6MHvU:2:age schema:0.0.1"
+}
+```
+Credential definition response:
+```
+{
+  "credential_definition_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:15:default"
+}
+```
+Schema 2:
+```
+{
+  "schema_version": "0.0.1",
+  "attributes": [
+    "name"
+  ],
+  "schema_name": "name schema"
+}
+```
+Response:
+```
+{
+  "schema_id": "UDyb3ptnV9wwi95no6MHvU:2:name schema:0.0.1"
+}
+```
+Credential definition response:
+```
+{
+  "credential_definition_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:16:default"
+}
+```
+Then from Agent1 we issue the following credentials and we follow the steps described above to save them on Agen2:
+```
+{
+  "credential_values": {"age": "20"},
+  "credential_definition_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:15:default",
+  "connection_id": "8af9397f-2e95-4ba1-a905-0f045e09823f"
+}
+```
+```
+{
+  "credential_values": {"name": "Alice"},
+  "credential_definition_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:16:default",
+  "connection_id": "8af9397f-2e95-4ba1-a905-0f045e09823f"
+}
+```
+From Agent1 we send a presentation exchange request with the following data:
+```
+{
+  "requested_predicates": [
+    {
+      "name": "age",
+      "p_type": ">=",
+      "restrictions": [
+        {"cred_def_id" : "UDyb3ptnV9wwi95no6MHvU:3:CL:15:default"}
+      ],
+      "p_value":  18
+    }
+  ],
+  "requested_attributes": [
+    {
+      "name": "name",
+      "restrictions": [
+        {"cred_def_id" : "UDyb3ptnV9wwi95no6MHvU:3:CL:16:default"}
+      ]
+    }
+  ],
+  "name": "Proof of Age",
+  "version": "1.0",
+  "connection_id": "8af9397f-2e95-4ba1-a905-0f045e09823f"
+}
+```
+On Agent2, the received presentation_exchange will look like this:
+```
+{
+    "presentation_request": {
+        "name": "Proof of Age",
+        "version": "1.0",
+        "nonce": "78716091191176403942869019233694504772",
+        "requested_attributes": {
+            "0c7f1f21-ab7c-4c3b-ab51-9fa999df1095": {
+                "name": "name",
+                "restrictions": [
+                    {
+                        "cred_def_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:16:default"
+                    }
+                ]
+            }
+        },
+        "requested_predicates": {
+            "2d64df62-82de-4dbb-bd7b-7f1224b8a74f": {
+                "name": "age",
+                "p_type": ">=",
+                "restrictions": [
+                    {
+                        "cred_def_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:15:default"
+                    }
+                ],
+                "p_value": 18
+            }
+        }
+    },
+    "updated_at": "2019-08-16 11:36:23.578211Z",
+    "thread_id": "3e682b5d-0a56-4cd5-9045-c4d7f338c938",
+    "connection_id": "6d8340d9-1e61-4637-8572-13f6adfc2a59",
+    "presentation_exchange_id": "9a8528ea-bf00-4ff6-899f-ec171671e17e",
+    "state": "request_received",
+    "created_at": "2019-08-16 11:36:23.578211Z",
+    "initiator": "external"
+}
+```
+Agent2 has to search his wallet for credentials that can fill the presentation. The response will look like the following:
+```
+[
+    {
+        "cred_info": {
+            "referent": "d78f8ba2-7971-4155-866b-ba98e4842642",
+            "attrs": {
+                "name": "Alice"
+            },
+            "schema_id": "UDyb3ptnV9wwi95no6MHvU:2:name schema:0.0.1",
+            "cred_def_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:16:default",
+            "rev_reg_id": null,
+            "cred_rev_id": null
+        },
+        "interval": null,
+        "presentation_referents": [
+            "d0e1c129-159a-472f-a53c-67ca9f3b07ea"
+        ]
+    },
+    {
+        "cred_info": {
+            "referent": "be682fe5-8fe0-44dd-9399-0cc57d503b31",
+            "attrs": {
+                "age": "20"
+            },
+            "schema_id": "UDyb3ptnV9wwi95no6MHvU:2:age schema:0.0.1",
+            "cred_def_id": "UDyb3ptnV9wwi95no6MHvU:3:CL:15:default",
+            "rev_reg_id": null,
+            "cred_rev_id": null
+        },
+        "interval": null,
+        "presentation_referents": [
+            "b099c219-3758-4c58-82f0-31ff663450d5"
+        ]
+    }
+]
+```
+Following the flow described above, Agent2 will respond with the following presentation which will then be received and verified on Agent1:
+```
+{
+    "self_attested_attributes": {},
+    "requested_attributes": {
+        "d0e1c129-159a-472f-a53c-67ca9f3b07ea": {
+            "cred_id": "d78f8ba2-7971-4155-866b-ba98e4842642",
+            "revealed": true
+        }
+    },
+    "requested_predicates": {
+        "b099c219-3758-4c58-82f0-31ff663450d5": {
+            "cred_id": "be682fe5-8fe0-44dd-9399-0cc57d503b31"
+        }
+    }
+}
+```
