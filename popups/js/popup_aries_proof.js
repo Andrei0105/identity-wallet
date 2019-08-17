@@ -18,7 +18,13 @@ function displayProof() {
                     });
                 });
         }
-        console.log(newest_presentation_exchange)
+        console.log(JSON.stringify(newest_presentation_exchange))
+        window.presentation_exchange = newest_presentation_exchange;
+        await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials',
+            function (data, status, jqXHR) {
+                window.corresponding_credentials = data;
+                console.log('Corresponding credentials:', JSON.stringify(data))
+            });
         ////// temporary for testing
         window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)[0]
         window.pred_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_predicates)[0]
@@ -28,22 +34,55 @@ function displayProof() {
     });
 }
 
-function createPresentation() {
+function createPresentation(presentation_exchange, corresponding_credentials) {
+
     // return hardcoded presentation for testing
-    return '{\
-        "self_attested_attributes": {},\
-        "requested_attributes": {\
-            "' + window.attr_ref + '": {\
-                "cred_id": "c0d97166-b9a7-4f87-8bcb-689cf862ebfa",\
-                "revealed": true\
-            }\
-        },\
-        "requested_predicates": {\
-            "' + window.pred_ref + '": {\
-                "cred_id": "c0d97166-b9a7-4f87-8bcb-689cf862ebfa"\
-            }\
-        }\
-    }'
+    // presentation = '{\
+    //     "self_attested_attributes": {},\
+    //     "requested_attributes": {\
+    //         "' + window.attr_ref + '": {\
+    //             "cred_id": "d78f8ba2-7971-4155-866b-ba98e4842642",\
+    //             "revealed": true\
+    //         }\
+    //     },\
+    //     "requested_predicates": {\
+    //         "' + window.pred_ref + '": {\
+    //             "cred_id": "be682fe5-8fe0-44dd-9399-0cc57d503b31"\
+    //         }\
+    //     }\
+    // }'
+
+    presentation_exchange = window.presentation_exchange;
+    corresponding_credentials = window.corresponding_credentials;
+
+    // get the referents for the requested attributes and predicates
+    // TO DO: check for self signed attributes
+    requested_attr_referents = Object.keys(presentation_exchange.presentation_request.requested_attributes)
+    requested_pred_referents = Object.keys(presentation_exchange.presentation_request.requested_predicates)
+
+    // map referents to credential ids
+    referents_to_cred_ids = {}
+    corresponding_credentials.forEach(function (credential_details) {
+        credential_id = credential_details.cred_info.referent;
+        referents = credential_details.presentation_referents;
+        referents.forEach(function (referent) {
+            if(typeof referents_to_cred_ids[referent] == 'undefined')
+                referents_to_cred_ids[referent] = [credential_id]
+        });
+    });
+    console.log('Referents to credentials:', referents_to_cred_id);
+    // generate the presentation
+    presentation = { self_attested_attributes: {}, requested_attributes: {}, requested_predicates: {} };
+    requested_attr_referents.forEach(function (referent) {
+        corresponding_credential_id = referents_to_cred_ids[referent][0]
+        presentation.requested_attributes[referent] = {cred_id: corresponding_credential_id, revealed: true};
+    });
+    requested_pred_referents.forEach(function (referent) {
+        corresponding_credential_id = referents_to_cred_ids[referent][0]
+        presentation.requested_predicates[referent] = {cred_id: corresponding_credential_id};
+    });
+    console.log('Generated presentation:', presentation);
+    return presentation;
 }
 
 async function sendPresentation(presentation) {
