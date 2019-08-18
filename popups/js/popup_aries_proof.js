@@ -19,22 +19,65 @@ function displayProof() {
                 });
         }
         console.log(JSON.stringify(newest_presentation_exchange))
-        window.presentation_exchange = newest_presentation_exchange;
+        corresponding_credentials = undefined;
         await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials',
             function (data, status, jqXHR) {
-                window.corresponding_credentials = data;
+                corresponding_credentials = data;
                 console.log('Corresponding credentials:', data)
             });
+        window.referents_to_cred_ids = getCredentialsForPresentationReferents(newest_presentation_exchange, corresponding_credentials);
         ////// temporary for testing
         window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)[0]
         window.pred_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_predicates)[0]
         //////
         window.aries_presentation_exchange_id = newest_presentation_exchange.presentation_exchange_id;
         document.querySelector('#msg').innerHTML = JSON.stringify(newest_presentation_exchange);
+        displayCredentialSelects(referents_to_cred_ids);
     });
 }
 
-function createPresentation(presentation_exchange, corresponding_credentials) {
+function displayCredentialSelects(referents_to_cred_ids) {
+    function createSelect(parent, referent, cred_ids) {
+        label = document.createElement('label');
+        label.innerHTML = referent;
+        parent.appendChild(label);
+        select = document.createElement('select');
+        select.id = referent;
+        select.className = 'form-control';
+        parent.appendChild(select);
+        cred_ids.forEach(function (credential) {
+            option = document.createElement('option');
+            option.value = credential;
+            option.text = credential;
+            select.appendChild(option);
+        });
+    }
+    for (referent in referents_to_cred_ids) {
+        createSelect(document.getElementById('cred_select_div'), referent, referents_to_cred_ids[referent]);
+    }
+}
+
+function getCredentialsForPresentationReferents(presentation_exchange, corresponding_credentials) {
+    // get the referents for the requested attributes and predicates
+    // TO DO: check for self signed attributes
+    requested_attr_referents = Object.keys(presentation_exchange.presentation_request.requested_attributes)
+    requested_pred_referents = Object.keys(presentation_exchange.presentation_request.requested_predicates)
+
+    // map referents to credential ids
+    referents_to_cred_ids = {}
+    corresponding_credentials.forEach(function (credential_details) {
+        credential_id = credential_details.cred_info.referent;
+        referents = credential_details.presentation_referents;
+        referents.forEach(function (referent) {
+            if (typeof referents_to_cred_ids[referent] == 'undefined')
+                referents_to_cred_ids[referent] = [credential_id]
+        });
+    });
+    console.log('Referents to credentials:', referents_to_cred_ids);
+    return referents_to_cred_ids;
+}
+
+function createPresentation(referents_to_cred_ids) {
 
     // return hardcoded presentation for testing
     // presentation = '{\
@@ -52,34 +95,19 @@ function createPresentation(presentation_exchange, corresponding_credentials) {
     //     }\
     // }'
 
-    presentation_exchange = window.presentation_exchange;
-    corresponding_credentials = window.corresponding_credentials;
+    referents_to_cred_ids = window.referents_to_cred_ids;
 
-    // get the referents for the requested attributes and predicates
-    // TO DO: check for self signed attributes
-    requested_attr_referents = Object.keys(presentation_exchange.presentation_request.requested_attributes)
-    requested_pred_referents = Object.keys(presentation_exchange.presentation_request.requested_predicates)
-
-    // map referents to credential ids
-    referents_to_cred_ids = {}
-    corresponding_credentials.forEach(function (credential_details) {
-        credential_id = credential_details.cred_info.referent;
-        referents = credential_details.presentation_referents;
-        referents.forEach(function (referent) {
-            if(typeof referents_to_cred_ids[referent] == 'undefined')
-                referents_to_cred_ids[referent] = [credential_id]
-        });
-    });
-    console.log('Referents to credentials:', referents_to_cred_ids);
     // generate the presentation
     presentation = { self_attested_attributes: {}, requested_attributes: {}, requested_predicates: {} };
     requested_attr_referents.forEach(function (referent) {
-        corresponding_credential_id = referents_to_cred_ids[referent][0]
-        presentation.requested_attributes[referent] = {cred_id: corresponding_credential_id, revealed: true};
+        // corresponding_credential_id = referents_to_cred_ids[referent][0]
+        corresponding_credential_id = document.getElementById(referent).value;
+        presentation.requested_attributes[referent] = { cred_id: corresponding_credential_id, revealed: true };
     });
     requested_pred_referents.forEach(function (referent) {
-        corresponding_credential_id = referents_to_cred_ids[referent][0]
-        presentation.requested_predicates[referent] = {cred_id: corresponding_credential_id};
+        // corresponding_credential_id = referents_to_cred_ids[referent][0]
+        corresponding_credential_id = document.getElementById(referent).value;
+        presentation.requested_predicates[referent] = { cred_id: corresponding_credential_id };
     });
     presentation = JSON.stringify(presentation);
     console.log('Generated presentation:', presentation);
