@@ -71,6 +71,8 @@ function getCredentialsForPresentationReferents(presentation_exchange, correspon
         referents.forEach(function (referent) {
             if (typeof referents_to_cred_ids[referent] == 'undefined')
                 referents_to_cred_ids[referent] = [credential_id]
+            else
+                referents_to_cred_ids[referent].push(credential_id);
         });
     });
     console.log('Referents to credentials:', referents_to_cred_ids);
