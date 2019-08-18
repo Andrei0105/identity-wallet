@@ -23,7 +23,7 @@ function displayProof() {
         await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials',
             function (data, status, jqXHR) {
                 window.corresponding_credentials = data;
-                console.log('Corresponding credentials:', JSON.stringify(data))
+                console.log('Corresponding credentials:', data)
             });
         ////// temporary for testing
         window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)[0]
@@ -41,13 +41,13 @@ function createPresentation(presentation_exchange, corresponding_credentials) {
     //     "self_attested_attributes": {},\
     //     "requested_attributes": {\
     //         "' + window.attr_ref + '": {\
-    //             "cred_id": "d78f8ba2-7971-4155-866b-ba98e4842642",\
+    //             "cred_id": "811b2c17-0ccb-489b-a2c9-682063d9d1be",\
     //             "revealed": true\
     //         }\
     //     },\
     //     "requested_predicates": {\
     //         "' + window.pred_ref + '": {\
-    //             "cred_id": "be682fe5-8fe0-44dd-9399-0cc57d503b31"\
+    //             "cred_id": "811b2c17-0ccb-489b-a2c9-682063d9d1be"\
     //         }\
     //     }\
     // }'
@@ -70,7 +70,7 @@ function createPresentation(presentation_exchange, corresponding_credentials) {
                 referents_to_cred_ids[referent] = [credential_id]
         });
     });
-    console.log('Referents to credentials:', referents_to_cred_id);
+    console.log('Referents to credentials:', referents_to_cred_ids);
     // generate the presentation
     presentation = { self_attested_attributes: {}, requested_attributes: {}, requested_predicates: {} };
     requested_attr_referents.forEach(function (referent) {
@@ -81,6 +81,7 @@ function createPresentation(presentation_exchange, corresponding_credentials) {
         corresponding_credential_id = referents_to_cred_ids[referent][0]
         presentation.requested_predicates[referent] = {cred_id: corresponding_credential_id};
     });
+    presentation = JSON.stringify(presentation);
     console.log('Generated presentation:', presentation);
     return presentation;
 }
