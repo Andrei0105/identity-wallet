@@ -1,4 +1,4 @@
-function displayCredential() {
+function displayCredentialPresentationDetails() {
     chrome.storage.local.get(['aries_credential_created_at', 'aries_endpoint', 'tab_id'], async function (storageData) {
         window.tab_id = storageData.tab_id;
         window.credential_created_at = storageData.aries_credential_created_at;
@@ -27,25 +27,34 @@ function displayCredential() {
         window.aries_popup_cred_exchange_id = newest_cred_exchange.credential_exchange_id;
         chrome.storage.local.set({ 'aries_popup_cred_exchange_id': newest_cred_exchange.credential_exchange_id });
         document.querySelector('#msg').innerHTML = JSON.stringify(newest_cred_exchange);
-
     });
 }
 
-async function acceptCredential() {
-    // chrome.storage.local.get(['aries_popup_cred_exchange_id', 'aries_endpoint', 'tab_id'], function (storageData) {
+async function requestAndDisplayCredential() {
+    document.querySelector('#default_msg').innerHTML = 'The following credential was received:';
     await $.post(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id + '/send-request')
-    responseGet = await $.get(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id)
-    while (responseGet.state != "credential_received") {
+    credential = await $.get(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id)
+    while (credential.state != "credential_received") {
         await sleep(1000);
-        responseGet = await $.get(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id)
+        credential = await $.get(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id)
     }
+    attributes = {}
+    for (attribute in credential.raw_credential.values) {
+        attributes[attribute] = credential.raw_credential.values[attribute].raw;
+    }
+    document.querySelector('#msg').innerHTML = JSON.stringify(attributes);
+    $("#aries_accept").html('Accept');
+    $('#aries_accept').unbind('click', requestAndDisplayCredential);
+    $('#aries_accept').click(acceptCredential);
+}
+
+async function acceptCredential() {
     await $.post(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id + '/store',
-    function (data, status, jqXHR) {
-        console.log('Stored credential. Response:', data);
-        chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'accepted' });
-    });
+        function (data, status, jqXHR) {
+            console.log('Stored credential. Response:', data);
+            chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'accepted' });
+        });
     self.close();
-    // });
 }
 
 function rejectCredential() {
@@ -54,8 +63,8 @@ function rejectCredential() {
 }
 
 $(document).ready(function () {
-    displayCredential();
-    $('#aries_accept').click(acceptCredential);
+    displayCredentialPresentationDetails();
+    $('#aries_accept').click(requestAndDisplayCredential);
     $('#aries_reject').click(rejectCredential);
 });
 
