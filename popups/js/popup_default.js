@@ -4,10 +4,13 @@ function getConnections() {
             function (data, status, jqXHR) {
                 connections = data.results;
                 connections.forEach(function (connection) {
-                    $('#connections_table > tbody:last-child').append('<tr align="center">\
+                    $('#connections_table > tbody:last-child').append('<tr class="clickable" data-toggle="collapse" data-target="#c-' + connection.connection_id + '" aria-expanded="true" aria-controls="c-' + connection.connection_id + '" align="center">\
                     <td class="align-middle">' + padShortenString(7, connection.connection_id) + '</td>\
                     <td class="align-middle">' + connection.state + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-connection_id="'+ connection.connection_id + '" type="button">Remove</button></td>\
+                    </tr>\
+                    <tr id="c-' + connection.connection_id + '" class="collapse">\
+                    <td colspan="100">' + connection.connection_id + '</td>\
                     </tr>');
                 });
                 $('.val').click(removeConnectionCb);
@@ -21,10 +24,13 @@ function getCredentialExchanges() {
             function (data, status, jqXHR) {
                 cred_exs = data.results;
                 cred_exs.forEach(function (cred_ex) {
-                    $('#credential_exchanges_table > tbody:last-child').append('<tr align="center">\
+                    $('#credential_exchanges_table > tbody:last-child').append('<tr class="clickable" data-toggle="collapse" data-target="#c-' + cred_ex.credential_exchange_id + '" aria-expanded="true" aria-controls="c-' + cred_ex.credential_exchange_id + '" align="center">\
                     <td class="align-middle">' + padShortenString(7, cred_ex.credential_exchange_id) + '</td>\
                     <td class="align-middle">' + padShortenString(14, cred_ex.state) + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_exchange_id="'+ cred_ex.credential_exchange_id + '" type="button">Remove</button></td>\
+                    </tr>\
+                    <tr id="c-' + cred_ex.credential_exchange_id + '" class="collapse">\
+                    <td colspan="100">' + cred_ex.credential_exchange_id + '</td>\
                     </tr>');
                 });
                 $('.val').click(removeCredentialExchangeCb);
@@ -47,10 +53,13 @@ function getCredentials() {
                             break;
                         }
                     }
-                    $('#credentials_table > tbody:last-child').append('<tr align="center">\
+                    $('#credentials_table > tbody:last-child').append('<tr class="clickable" data-toggle="collapse" data-target="#c-' + credential.referent + '" aria-expanded="true" aria-controls="c-' + credential.referent + '" align="center">\
                     <td class="align-middle">' + padShortenString(7, credential.referent) + '</td>\
                     <td class="align-middle">' + attrs_for_display + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_id="'+ credential.referent + '" type="button">Remove</button></td>\
+                    </tr>\
+                    <tr id="c-' + credential.referent + '" class="collapse">\
+                    <td colspan="100">' + credential.referent + '</td>\
                     </tr>');
                 });
                 $('.val').click(removeCredentialCb);
