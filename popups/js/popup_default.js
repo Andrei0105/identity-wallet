@@ -5,7 +5,7 @@ function getConnections() {
                 connections = data.results;
                 connections.forEach(function (connection) {
                     $('#connections_table > tbody:last-child').append('<tr align="center">\
-                    <td class="align-middle">' + connection.connection_id + '</td>\
+                    <td class="align-middle">' + padShortenString(7, connection.connection_id) + '</td>\
                     <td class="align-middle">' + connection.state + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-connection_id="'+ connection.connection_id + '" type="button">Remove</button></td>\
                     </tr>');
@@ -22,8 +22,8 @@ function getCredentialExchanges() {
                 cred_exs = data.results;
                 cred_exs.forEach(function (cred_ex) {
                     $('#credential_exchanges_table > tbody:last-child').append('<tr align="center">\
-                    <td class="align-middle">' + cred_ex.credential_exchange_id + '</td>\
-                    <td class="align-middle">' + cred_ex.state + '</td>\
+                    <td class="align-middle">' + padShortenString(7, cred_ex.credential_exchange_id) + '</td>\
+                    <td class="align-middle">' + padShortenString(14, cred_ex.state) + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_exchange_id="'+ cred_ex.credential_exchange_id + '" type="button">Remove</button></td>\
                     </tr>');
                 });
@@ -38,9 +38,18 @@ function getCredentials() {
             function (data, status, jqXHR) {
                 credentials = data.results;
                 credentials.forEach(function (credential) {
+                    attrs_for_display = '';
+                    for (attribute in credential.attrs) {
+                        attr_for_display = attribute + ': ' + credential.attrs[attribute];
+                        attrs_for_display += padShortenString(14, attr_for_display) + '<br/>'
+                        if (Object.keys(credential.attrs).length > 2) {
+                            attrs_for_display += '...';
+                            break;
+                        }
+                    }
                     $('#credentials_table > tbody:last-child').append('<tr align="center">\
-                    <td class="align-middle">' + credential.referent + '</td>\
-                    <td class="align-middle">' + JSON.stringify(credential.attrs) + '</td>\
+                    <td class="align-middle">' + padShortenString(7, credential.referent) + '</td>\
+                    <td class="align-middle">' + attrs_for_display + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_id="'+ credential.referent + '" type="button">Remove</button></td>\
                     </tr>');
                 });
@@ -115,3 +124,9 @@ $(document).ready(function () {
     getCredentialExchanges();
     getCredentials();
 });
+
+function padShortenString(length, str) {
+    if (str.length > length)
+        str = str.substring(0, length + 1) + '...';
+    return str;
+}

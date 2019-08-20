@@ -27,6 +27,7 @@
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
     <select id="sel_cred">
+        <option value="degree_schema_credential">degree_schema_credential</option>
         <option value="person_schema_credential">person_schema_credential</option>
         <option value="age_schema_credential">age_schema_credential</option>
         <option value="name_schema_credential">name_schema_credential</option>
@@ -49,6 +50,12 @@
             window.requestedConnectionId = jqXHR.responseJSON.connection_id.toString();
             return JSON.stringify(jqXHR.responseJSON.invitation);
         }
+
+        degree_schema_credential = '{\
+  "credential_values": {"name": "Alice Smith", "age": "24", "degree": "Maths", "date": "2018-05-28"},\
+  "credential_definition_id": "UPwPYH1pNP33UCpHDe8Cg9:3:CL:20:default",\
+  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+}';
 
         person_schema_credential = '{\
   "credential_values": {"name": "Alice Smith", "age": "24"},\
