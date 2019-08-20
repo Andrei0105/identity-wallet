@@ -67,35 +67,44 @@ function getCredentials() {
     });
 }
 
-function removeConnectionCb() {
+function removeConnectionCb(e) {
+    e.preventDefault();
+    e.stopPropagation();
     button = $(this);
     connection_id = $(this).data('connection_id');
     chrome.storage.local.get(['aries_endpoint'], function (storageData) {
         $.post(storageData.aries_endpoint + '/connections/' + connection_id + '/remove',
             function (postData, status, jqXHR) {
                 button.closest("tr").remove();
+                $('#c-' + connection_id).remove();
             });
     });
 }
 
-function removeCredentialExchangeCb() {
+function removeCredentialExchangeCb(e) {
+    e.preventDefault();
+    e.stopPropagation();
     button = $(this);
     credential_exchange_id = $(this).data('credential_exchange_id');
     chrome.storage.local.get(['aries_endpoint'], function (storageData) {
         $.post(storageData.aries_endpoint + '/credential_exchange/' + credential_exchange_id + '/remove',
             function (postData, status, jqXHR) {
                 button.closest("tr").remove();
+                $('#c-' + credential_exchange_id).remove();
             });
     });
 }
 
-function removeCredentialCb() {
+function removeCredentialCb(e) {
+    e.preventDefault();
+    e.stopPropagation();
     button = $(this);
     credential_id = $(this).data('credential_id');
     chrome.storage.local.get(['aries_endpoint'], function (storageData) {
         $.post(storageData.aries_endpoint + '/credential/' + credential_id + '/remove',
             function (postData, status, jqXHR) {
                 button.closest("tr").remove();
+                $('#c-' + credential_id).remove();
             });
     });
 }
