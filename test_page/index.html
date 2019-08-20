@@ -26,10 +26,18 @@
     <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
+    <select id="sel_cred">
+        <option value="person_schema_credential">person_schema_credential</option>
+        <option value="age_schema_credential">age_schema_credential</option>
+        <option value="name_schema_credential">name_schema_credential</option>
+    </select>
     <button type="button" id='aries-credential-button'>Get Aries credential</button>
+    <select id="sel_proof">
+        <option value="person_schema_presentation">person_schema_presentation</option>
+        <option value="non_restricted_presentation">non_restricted_presentation</option>
+    </select>
     <button type="button" id='aries-proof-button'>Present Aries proof</button>
     <script>
-
         function getInvitation() {
             // generate a connection invitation on the page's agent
             // this should be managed by the page
@@ -65,11 +73,12 @@
             // on user interaction to request a credential, the page's agent
             // should use /credential-exchage/send to start a cred exchange;
             // the credential exchange id must be sent to the page
+            data = eval(document.getElementById('sel_cred').value)
             var jqXHR = $.ajax({
                 type: 'POST',
                 url: 'http://localhost:5050/credential_exchange/send',
                 // hardcoded test credential exchange
-                data: name_schema_credential,
+                data: data,
                 async: false
             });
             console.log('Generated credential exchange:', jqXHR.responseJSON)
@@ -123,12 +132,12 @@
 }';
 
         function startProofExchangeAndGetUpdatedAt() {
-            // 
+            data = eval(document.getElementById('sel_proof').value)
             var jqXHR = $.ajax({
                 type: 'POST',
                 url: 'http://localhost:5050/presentation_exchange/send_request',
                 // hardcoded example proof request
-                data: non_restricted_presentation,
+                data: data,
                 async: false
             });
             window.generatedPresentationRequestId = jqXHR.responseJSON.presentation_exchange_id
