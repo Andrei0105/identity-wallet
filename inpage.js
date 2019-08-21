@@ -45,6 +45,45 @@ window.iw.notifyProofRequest =
         iw.addMessageListener();
     }
 
+window.iw.sendUportIssueQr =
+    function sendUportIssueQr(qr_code) {
+        window.postMessage({
+            type: "uport-issue-credential-qr",
+            qr_code: qr_code
+        });
+        iw.addMessageListener();
+    }
+
+uPortObserverCallback = function (mutationsList, observer) {
+    for (var mutation of mutationsList) {
+        if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper') {
+            console.log('P:', 'uPort wrapper was added');
+            var uportWrapperDiv = document.getElementById('uport-wrapper');
+            uportWrapperDiv.style.display = 'none';
+            var imgDiv = document.getElementById('uport__modal-main')
+            var imgs = imgDiv.getElementsByTagName("img");
+            console.log('P:', 'QR code src:\n', imgs[0].src);
+            iw.sendUportIssueQr(imgs[0].src);
+        }
+    }
+}
+
+window.iw.createAndStartObserver =
+    function createAndStartObserver(target_node, config, callback) {
+        var config = { childList: true };
+        var observer = new MutationObserver(callback);
+        observer.observe(target_node, config);
+    }
+
+window.iw.createAndStartUportObserver =
+    function createAndStartUportObserver() {
+        // TO DO: check if uport-wrapper is always added as a body child
+        target_node = document.body;
+        config = { childList: true };
+        callback = uPortObserverCallback;
+        iw.createAndStartObserver(target_node, config, callback)
+    }
+
 // Send message to content script (CS)
 window.iw.sendMessage = function sendMessage(type) {
     switch (type) {

@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/uport-connect/dist/uport-connect.js"></script>
     <script src="https://unpkg.com/blockstack@19.2.1/dist/blockstack.js"
         integrity="sha384-+qYCYoUGzsMLAzHm80c4DyhbWgHBBb2N0RFqsg7Lws5ljtBtj/IwpgxZkiR7j7lp"
         crossorigin="anonymous"></script>
@@ -23,6 +24,7 @@
     <input name="country" type="text" id="country">
 
     <button type="button" id='static_login_btn'>Login with IW</button>
+    <button type="button" id='uport_issue_btn'>Uport Issue</button>
     <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
@@ -171,6 +173,7 @@
         function useIW() {
             if (typeof iw !== 'undefined') {
                 $(document).ready(function () {
+                    window.iw.createAndStartUportObserver();
                     $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestUportClaims);
                     $('#static_login_btn_blockstack').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
@@ -178,6 +181,7 @@
                     $('#aries-connect-button').click(initiateAriesConnectionWrapper);
                     $('#aries-credential-button').click(notifyCredentialRequestWrapper);
                     $('#aries-proof-button').click(notifyProofRequestWrapper);
+                    $('#uport_issue_btn').click(uportIssue);
                     setTimeout(userResponseAction, 500);
                 });
             }
@@ -275,6 +279,17 @@
         }
 
         setTimeout(useBlockstack, 1000);
+
+        function uportIssue() {
+            const Connect = window.uportconnect
+            const uport = new Connect('MyDApp')
+            // uport.requestDisclosure();
+            uport.sendVerification({
+                exp: Math.floor(new Date().getTime() / 1000) + 30 * 24 * 60 * 60,
+                claim: { 'Example2': { 'Last Seen': `${new Date()}` } }
+            })
+        }
+
     </script>
 
 </body>

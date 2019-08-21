@@ -45,6 +45,12 @@ chrome.runtime.onMessage.addListener(
           window.open("popups/popup_aries_proof.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
+      case 'uportIssueCredentialQr':
+        {
+          chrome.storage.local.set({ 'uport_issue_credetial_qr': message.qr_code, 'tab_id': sender.tab.id });
+          window.open("popups/popup_uport_issue.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
+          break;
+        }
       default:
         console.warn('BG:', 'Unrecognized message: ', request)
     }

@@ -26,6 +26,11 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'openPopup' }, 'openPopup');
                 break;
             }
+        case 'uport-issue-credential-qr':
+            {
+                isListenerAction({ type: 'uportIssueCredentialQr', qr_code: message.qr_code }, 'uportIssueCredentialQr');
+                break;
+            }
         case 'r-blockstack-login':
             {
                 isListenerAction({ type: 'blockstackLogin', auth: message.auth }, 'blockstackLogin');
@@ -97,8 +102,11 @@ function isListenerAction(data, messageType) {
         case 'ariesConnectionInvite':
         case 'ariesCredentialExchangeStart':
         case 'ariesProofExchangeStart':
+        case 'uportIssueCredentialQr':
             chrome.runtime.sendMessage(data);
+            break;
         default:
+            console.warn('CS:', 'Unrecognised message type: ', messageType);
     }
 }
 
