@@ -61,6 +61,11 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'ariesProofExchangeStart', proof_request_created_at: message.proof_request_created_at }, 'ariesProofExchangeStart');
                 break;
             }
+        case 'uport-received-response':
+            {
+                isListenerAction({ type: 'uportReceivedResponse'}, 'uportReceivedResponse');
+                break;
+            }
         default:
             console.warn('CS:', 'Unrecognized message.');
     }
@@ -115,6 +120,7 @@ function isListenerAction(data, messageType) {
         case 'uportIssueCredentialQr':
         case 'uportSelectiveDisclosureQr':
         case 'uportQr':
+        case 'uportReceivedResponse':
             chrome.runtime.sendMessage(data);
             break;
         default:

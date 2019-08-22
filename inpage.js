@@ -75,13 +75,18 @@ window.iw.sendUportQr =
 uPortObserverCallback = function (mutationsList, observer) {
     for (var mutation of mutationsList) {
         if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper') {
-            console.log('P:', 'uPort wrapper was added');
+            console.log('IS:', 'uPort wrapper was added');
             var uportWrapperDiv = document.getElementById('uport-wrapper');
             uportWrapperDiv.style.display = 'none';
             var imgDiv = document.getElementById('uport__modal-main')
             var imgs = imgDiv.getElementsByTagName("img");
-            console.log('P:', 'QR code src:\n', imgs[0].src);
+            console.log('IS:', 'QR code src:\n', imgs[0].src);
             iw.sendUportQr(imgs[0].src);
+        }
+        if (mutation.removedNodes.length && mutation.removedNodes[0].id == 'uport-wrapper') {
+            window.postMessage({
+                type: "uport-received-response"
+            });
         }
     }
 }
