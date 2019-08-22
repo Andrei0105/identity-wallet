@@ -25,6 +25,7 @@
 
     <button type="button" id='static_login_btn'>Login with IW</button>
     <button type="button" id='uport_issue_btn'>Uport Issue</button>
+    <button type="button" id='uport_login_btn'>Uport Login</button>
     <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
@@ -182,6 +183,7 @@
                     $('#aries-credential-button').click(notifyCredentialRequestWrapper);
                     $('#aries-proof-button').click(notifyProofRequestWrapper);
                     $('#uport_issue_btn').click(uportIssue);
+                    $('#uport_login_btn').click(uportLogin);
                     setTimeout(userResponseAction, 500);
                 });
             }
@@ -283,13 +285,23 @@
         function uportIssue() {
             const Connect = window.uportconnect
             const uport = new Connect('MyDApp')
-            // uport.requestDisclosure();
             uport.sendVerification({
                 exp: Math.floor(new Date().getTime() / 1000) + 30 * 24 * 60 * 60,
                 claim: { 'Example2': { 'Last Seen': `${new Date()}` } }
             })
         }
 
+        function uportLogin() {
+            const Connect = window.uportconnect
+            const uport = new Connect('MyDApp')
+
+            const reqID = 'disclosureReq'
+            uport.requestDisclosure()
+
+            uport.onResponse('disclosureReq').then(res => {
+                console.log(JSON.stringify(res.payload));
+            });
+        }
     </script>
 
 </body>

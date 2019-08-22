@@ -31,6 +31,16 @@ window.addEventListener('message', function (event) {
                 isListenerAction({ type: 'uportIssueCredentialQr', qr_code: message.qr_code }, 'uportIssueCredentialQr');
                 break;
             }
+        case 'uport-selective-disclosure-qr':
+            {
+                isListenerAction({ type: 'uportSelectiveDisclosureQr', qr_code: message.qr_code }, 'uportSelectiveDisclosureQr');
+                break;
+            }
+        case 'uport-all-qr':
+            {
+                isListenerAction({ type: 'uportQr', qr_code: message.qr_code }, 'uportQr');
+                break;
+            }
         case 'r-blockstack-login':
             {
                 isListenerAction({ type: 'blockstackLogin', auth: message.auth }, 'blockstackLogin');
@@ -103,6 +113,8 @@ function isListenerAction(data, messageType) {
         case 'ariesCredentialExchangeStart':
         case 'ariesProofExchangeStart':
         case 'uportIssueCredentialQr':
+        case 'uportSelectiveDisclosureQr':
+        case 'uportQr':
             chrome.runtime.sendMessage(data);
             break;
         default:

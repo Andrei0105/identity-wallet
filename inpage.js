@@ -54,6 +54,24 @@ window.iw.sendUportIssueQr =
         iw.addMessageListener();
     }
 
+window.iw.sendUportDisclosureQr =
+    function sendUportDisclosureQr(qr_code) {
+        window.postMessage({
+            type: "uport-selective-disclosure-qr",
+            qr_code: qr_code
+        });
+        iw.addMessageListener();
+    }
+
+window.iw.sendUportQr =
+    function sendUportQr(qr_code) {
+        window.postMessage({
+            type: "uport-all-qr",
+            qr_code: qr_code
+        });
+        iw.addMessageListener();
+    }
+
 uPortObserverCallback = function (mutationsList, observer) {
     for (var mutation of mutationsList) {
         if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper') {
@@ -63,7 +81,7 @@ uPortObserverCallback = function (mutationsList, observer) {
             var imgDiv = document.getElementById('uport__modal-main')
             var imgs = imgDiv.getElementsByTagName("img");
             console.log('P:', 'QR code src:\n', imgs[0].src);
-            iw.sendUportIssueQr(imgs[0].src);
+            iw.sendUportQr(imgs[0].src);
         }
     }
 }

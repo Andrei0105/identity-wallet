@@ -51,6 +51,19 @@ chrome.runtime.onMessage.addListener(
           window.open("popups/popup_uport_issue.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
+      case 'uportSelectiveDisclosureQr':
+        {
+          chrome.storage.local.set({ 'uport_selective_disclosure_qr': message.qr_code, 'tab_id': sender.tab.id });
+          window.open("popups/popup_uport_login.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
+          break;
+        }
+        case 'uportQr':
+        {
+          // case for both selective disclosure and issue credential
+          chrome.storage.local.set({ 'uport_qr': message.qr_code, 'tab_id': sender.tab.id });
+          window.open("popups/popup_uport_login.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
+          break;
+        }
       default:
         console.warn('BG:', 'Unrecognized message: ', request)
     }
