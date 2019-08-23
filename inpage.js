@@ -72,6 +72,13 @@ window.iw.sendUportQr =
         iw.addMessageListener();
     }
 
+window.iw.sendUportServerResponseReceived =
+    function sendUportServerResponseReceived() {
+        window.postMessage({
+            type: "uport-server-response-received"
+        });
+    }
+
 uPortObserverCallback = function (mutationsList, observer) {
     for (var mutation of mutationsList) {
         if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper') {

@@ -63,7 +63,12 @@ window.addEventListener('message', function (event) {
             }
         case 'uport-received-response':
             {
-                isListenerAction({ type: 'uportReceivedResponse'}, 'uportReceivedResponse');
+                isListenerAction({ type: 'uportReceivedResponse' }, 'uportReceivedResponse');
+                break;
+            }
+        case 'uport-server-response-received':
+            {
+                isListenerAction({ type: 'uportServerResponseReceived' }, 'uportServerResponseReceived');
                 break;
             }
         default:
@@ -121,6 +126,7 @@ function isListenerAction(data, messageType) {
         case 'uportSelectiveDisclosureQr':
         case 'uportQr':
         case 'uportReceivedResponse':
+        case 'uportServerResponseReceived':
             chrome.runtime.sendMessage(data);
             break;
         default:

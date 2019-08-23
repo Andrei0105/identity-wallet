@@ -71,6 +71,13 @@ chrome.runtime.onMessage.addListener(
           popup.close();
           break;
         }
+        case 'uportServerResponseReceived':
+        {
+          // response from uPort server side app was received. popup can be closed
+          popup = window.open("popups/popup_uport_login.html", "extension_popup");
+          popup.close();
+          break;
+        }
       default:
         console.warn('BG:', 'Unrecognized message: ', request)
     }

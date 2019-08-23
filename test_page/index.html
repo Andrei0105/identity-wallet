@@ -311,7 +311,24 @@
                 url: 'http://localhost:8088',
                 async: false
             });
-            console.log('Received OR code:', jqXHR.responseText)
+            qr = jqXHR.responseText;
+            console.log('Received OR code:', qr)
+            iw.sendUportQr(qr);
+            function checkResponse() {
+                jqXHR = $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:8088/resp',
+                    async: false
+                });
+                received = jqXHR.responseText;
+                console.log(received);
+                if (received === 'true') {
+                    iw.sendUportServerResponseReceived();
+                }
+                else
+                    setTimeout(checkResponse, 2000);
+            }
+            setTimeout(checkResponse, 2000);
         }
     </script>
 
