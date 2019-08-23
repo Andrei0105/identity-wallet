@@ -27,6 +27,7 @@
     <button type="button" id='uport_issue_btn'>Uport Issue</button>
     <button type="button" id='uport_login_btn'>Uport Login</button>
     <button type="button" id='uport_login_server_btn'>Uport Server Login</button>
+    <button type="button" id='uport_issue_server_btn'>Uport Server Issue</button>
     <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
@@ -186,6 +187,7 @@
                     $('#uport_issue_btn').click(uportIssue);
                     $('#uport_login_btn').click(uportLogin);
                     $('#uport_login_server_btn').click(uportServerLogin);
+                    $('#uport_issue_server_btn').click(uportServerIssue);
                     setTimeout(userResponseAction, 500);
                 });
             }
@@ -305,16 +307,7 @@
             });
         }
 
-        function uportServerLogin() {
-            jqXHR = $.ajax({
-                type: 'GET',
-                url: 'http://localhost:8088',
-                async: false
-            });
-            qr = jqXHR.responseText;
-            console.log('Received OR code:', qr)
-            iw.sendUportQr(qr);
-            function checkResponse() {
+        function checkUportServerResponse() {
                 jqXHR = $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8088/resp',
@@ -326,9 +319,35 @@
                     iw.sendUportServerResponseReceived();
                 }
                 else
-                    setTimeout(checkResponse, 2000);
+                    setTimeout(checkUportServerResponse, 2000);
             }
-            setTimeout(checkResponse, 2000);
+
+        function uportServerLogin() {
+            jqXHR = $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8088',
+                async: false
+            });
+            qr = jqXHR.responseText;
+            console.log('Received OR code:', qr)
+            iw.sendUportQr(qr);
+            setTimeout(checkUportServerResponse, 2000);
+        }
+
+        function uportServerIssue() {
+            jqXHR = $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8088/create_verification',
+                async: false
+            });
+            qr = jqXHR.responseText;
+            if (qr == 'User not logged in') {
+                alert('User not logged in');
+                return;
+            }
+            console.log('Received OR code:', qr)
+            iw.sendUportQr(qr);
+            setTimeout(checkUportServerResponse, 2000);
         }
     </script>
 
