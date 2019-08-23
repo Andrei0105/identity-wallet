@@ -2,6 +2,36 @@
 <html>
 
 <head>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        #cover {
+            background: #222 url('') center center no-repeat;
+            background-size: cover;
+            height: 100%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+        }
+
+        #cover-caption {
+            width: 100%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://unpkg.com/uport-connect/dist/uport-connect.js"></script>
     <script src="https://unpkg.com/blockstack@19.2.1/dist/blockstack.js"
@@ -20,29 +50,87 @@
 </head>
 
 <body>
-    <input name="name" type="text" id="name">
-    <input name="country" type="text" id="country">
+    <section id="cover">
+        <div id="cover-caption">
+            <div id="container" class="container">
+                <div class="row text-white">
+                    <div class="col-sm-6 offset-sm-3 text-center">
+                        <h1 class="display-4">Identity Wallet Test Page</h1>
+                        <div class="info-form">
+                            <form action="" class="form-inlin justify-content-center">
+                                <div class="form-group">
+                                    <label class="sr-only">Name</label>
+                                    <input class="form-control" name="name" type="text" id="name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only">Country</label>
+                                    <input class="form-control" name="country" type="text" id="country">
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='uport_request_iw'>uPort request
+                                        (via IW)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='uport_request_client'>uPort
+                                        request
+                                        (client)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='uport_issue_client'>uPort issue
+                                        (client)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='uport_request_server'>uPort
+                                        request (server)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='uport_issue_server'>uPort
+                                        issue (server)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='blockstack_login'>Blockstack Login
+                                        (via IW)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='blockstack_login_page'>Blockstack
+                                        Login
+                                        (client test)</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='aries_connect'>Aries
+                                        connect (login)</button>
+                                </div>
+                                <div class="form-group">
+                                    <select class="custom-select" id="sel_cred">
+                                        <option value="degree_schema_credential">degree_schema_credential</option>
+                                        <option value="person_schema_credential">person_schema_credential</option>
+                                        <option value="age_schema_credential">age_schema_credential</option>
+                                        <option value="name_schema_credential">name_schema_credential</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='aries_issue'>Aries
+                                        issue</button>
+                                </div>
+                                <div class="form-group">
+                                    <select class="custom-select" id="sel_proof">
+                                        <option value="person_schema_presentation">person_schema_presentation</option>
+                                        <option value="non_restricted_presentation">non_restricted_presentation</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success" id='aries_request'>Aries
+                                        request</button>
+                                </div>
+                            </form>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <button type="button" id='static_login_btn'>Login with IW</button>
-    <button type="button" id='uport_issue_btn'>Uport Issue</button>
-    <button type="button" id='uport_login_btn'>Uport Login</button>
-    <button type="button" id='uport_login_server_btn'>Uport Server Login</button>
-    <button type="button" id='uport_issue_server_btn'>Uport Server Issue</button>
-    <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
-    <button type="button" id='signin-button'>Inpage blockstack test</button>
-    <button type="button" id='aries-connect-button'>Aries connect</button>
-    <select id="sel_cred">
-        <option value="degree_schema_credential">degree_schema_credential</option>
-        <option value="person_schema_credential">person_schema_credential</option>
-        <option value="age_schema_credential">age_schema_credential</option>
-        <option value="name_schema_credential">name_schema_credential</option>
-    </select>
-    <button type="button" id='aries-credential-button'>Get Aries credential</button>
-    <select id="sel_proof">
-        <option value="person_schema_presentation">person_schema_presentation</option>
-        <option value="non_restricted_presentation">non_restricted_presentation</option>
-    </select>
-    <button type="button" id='aries-proof-button'>Present Aries proof</button>
     <script>
         function getInvitation() {
             // generate a connection invitation on the page's agent
@@ -177,17 +265,17 @@
             if (typeof iw !== 'undefined') {
                 $(document).ready(function () {
                     window.iw.createAndStartUportObserver();
-                    $('#static_login_btn').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
+                    $('#uport_request_iw').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
                         iw.requestUportClaims);
-                    $('#static_login_btn_blockstack').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
-                        iw.requestBlockstackClaims);
-                    $('#aries-connect-button').click(initiateAriesConnectionWrapper);
-                    $('#aries-credential-button').click(notifyCredentialRequestWrapper);
-                    $('#aries-proof-button').click(notifyProofRequestWrapper);
-                    $('#uport_issue_btn').click(uportIssue);
-                    $('#uport_login_btn').click(uportLogin);
-                    $('#uport_login_server_btn').click(uportServerLogin);
-                    $('#uport_issue_server_btn').click(uportServerIssue);
+                    $('#uport_request_client').click(uportLogin);
+                    $('#uport_issue_client').click(uportIssue);
+                    $('#uport_request_server').click(uportServerLogin);
+                    $('#uport_issue_server').click(uportServerIssue);
+                    $('#blockstack_login').click(iw.requestBlockstackClaims);
+                    $('#aries_connect').click(initiateAriesConnectionWrapper);
+                    $('#aries_issue').click(notifyCredentialRequestWrapper);
+                    $('#aries_request').click(notifyProofRequestWrapper);
+
                     setTimeout(userResponseAction, 500);
                 });
             }
@@ -276,7 +364,7 @@
         function useBlockstack() {
             if (typeof window.blockstack !== "undefined") {
                 authReq = blockstack.makeAuthRequest();
-                document.getElementById('signin-button').addEventListener('click', function () {
+                document.getElementById('blockstack_login_page').addEventListener('click', function () {
                     console.log('here')
                     blockstack.redirectToSignInWithAuthRequest(authReq);
                 });
@@ -308,19 +396,19 @@
         }
 
         function checkUportServerResponse() {
-                jqXHR = $.ajax({
-                    type: 'GET',
-                    url: 'http://localhost:8088/resp',
-                    async: false
-                });
-                received = jqXHR.responseText;
-                console.log(received);
-                if (received === 'true') {
-                    iw.sendUportServerResponseReceived();
-                }
-                else
-                    setTimeout(checkUportServerResponse, 2000);
+            jqXHR = $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8088/resp',
+                async: false
+            });
+            received = jqXHR.responseText;
+            console.log(received);
+            if (received === 'true') {
+                iw.sendUportServerResponseReceived();
             }
+            else
+                setTimeout(checkUportServerResponse, 2000);
+        }
 
         function uportServerLogin() {
             jqXHR = $.ajax({
