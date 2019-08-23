@@ -26,6 +26,7 @@
     <button type="button" id='static_login_btn'>Login with IW</button>
     <button type="button" id='uport_issue_btn'>Uport Issue</button>
     <button type="button" id='uport_login_btn'>Uport Login</button>
+    <button type="button" id='uport_login_server_btn'>Uport Server Login</button>
     <button type="button" id='static_login_btn_blockstack'>Login with Blockstack</button>
     <button type="button" id='signin-button'>Inpage blockstack test</button>
     <button type="button" id='aries-connect-button'>Aries connect</button>
@@ -184,6 +185,7 @@
                     $('#aries-proof-button').click(notifyProofRequestWrapper);
                     $('#uport_issue_btn').click(uportIssue);
                     $('#uport_login_btn').click(uportLogin);
+                    $('#uport_login_server_btn').click(uportServerLogin);
                     setTimeout(userResponseAction, 500);
                 });
             }
@@ -301,6 +303,15 @@
             uport.onResponse('disclosureReq').then(res => {
                 console.log(JSON.stringify(res.payload));
             });
+        }
+
+        function uportServerLogin() {
+            jqXHR = $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8088',
+                async: false
+            });
+            console.log('Received OR code:', jqXHR.responseText)
         }
     </script>
 
