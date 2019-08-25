@@ -48,7 +48,7 @@ window.addEventListener('message', function (event) {
             }
         case 'aries-connection-invite':
             {
-                isListenerAction({ type: 'ariesConnectionInvite', invitation: message.invitation }, 'ariesConnectionInvite');
+                isListenerAction({ type: 'ariesConnectionInvite', invitation: message.invitation, entity_name: message.entity_name, entity_url: message.entity_url, entity_message: message.entity_message }, 'ariesConnectionInvite');
                 break;
             }
         case 'aries-credential-request-initiated':

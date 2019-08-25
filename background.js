@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener(
         }
       case 'ariesConnectionInvite':
         {
-          chrome.storage.local.set({ 'aries_invitation': message.invitation, 'tab_id': sender.tab.id });
+          chrome.storage.local.set({ 'aries_invitation': message.invitation, 'tab_id': sender.tab.id, 'entity_name': message.entity_name, 'entity_url': message.entity_url, 'entity_message': message.entity_message });
           window.open("popups/popup_aries.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }

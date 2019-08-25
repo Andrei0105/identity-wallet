@@ -22,7 +22,10 @@ window.iw.initiateAriesConnection =
     function initiateAriesConnection(event) {
         window.postMessage({
             type: "aries-connection-invite",
-            invitation: event.data.invitation
+            invitation: event.data.invitation,
+            entity_name: event.data.entity_name,
+            entity_url: event.data.entity_url,
+            entity_message: event.data.entity_message
         });
         iw.addMessageListener();
     }

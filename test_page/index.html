@@ -248,7 +248,7 @@
         function initiateAriesConnectionWrapper() {
             invitation = getInvitation();
             console.log(invitation);
-            iw.initiateAriesConnection({ data: { invitation: invitation } });
+            iw.initiateAriesConnection({ data: { invitation: invitation, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'A connection is required to login.' } });
         }
 
         function notifyCredentialRequestWrapper() {
