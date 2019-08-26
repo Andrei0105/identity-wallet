@@ -53,12 +53,12 @@ window.addEventListener('message', function (event) {
             }
         case 'aries-credential-request-initiated':
             {
-                isListenerAction({ type: 'ariesCredentialExchangeStart', credential_created_at: message.credential_created_at }, 'ariesCredentialExchangeStart');
+                isListenerAction({ type: 'ariesCredentialExchangeStart', credential_created_at: message.credential_created_at, entity_name: message.entity_name, entity_url: message.entity_url, entity_message: message.entity_message }, 'ariesCredentialExchangeStart');
                 break;
             }
         case 'aries-proof-request-initiated':
             {
-                isListenerAction({ type: 'ariesProofExchangeStart', proof_request_created_at: message.proof_request_created_at }, 'ariesProofExchangeStart');
+                isListenerAction({ type: 'ariesProofExchangeStart', proof_request_created_at: message.proof_request_created_at, entity_name: message.entity_name, entity_url: message.entity_url, entity_message: message.entity_message }, 'ariesProofExchangeStart');
                 break;
             }
         case 'uport-received-response':

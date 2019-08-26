@@ -1,5 +1,5 @@
 function displayProof() {
-    chrome.storage.local.get(['aries_proof_request_created_at', 'aries_endpoint', 'tab_id'], async function (storageData) {
+    chrome.storage.local.get(['aries_proof_request_created_at', 'aries_endpoint', 'tab_id', 'entity_name', 'entity_url', 'entity_message'], async function (storageData) {
         // display received timestamp for test
         document.querySelector('#msg').innerHTML = storageData.aries_proof_request_created_at;
         window.tab_id = storageData.tab_id;
@@ -19,6 +19,14 @@ function displayProof() {
                 });
         }
         console.log(JSON.stringify(newest_presentation_exchange))
+        if (storageData.entity_name) {
+            document.querySelector('#received_from_entity').innerHTML = 'Proof request received from ' + storageData.entity_name + ' available at ' + storageData.entity_url;
+        }
+        connection_details = await getConnection(newest_presentation_exchange.connection_id);
+        document.querySelector('#label_and_endpoint').innerHTML = 'Sender Agent label: ' + connection_details.their_label;
+        if (storageData.entity_message) {
+            document.querySelector('#message_from_entity').innerHTML = storageData.entity_message;
+        }
         corresponding_credentials = undefined;
         await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials',
             function (data, status, jqXHR) {
@@ -130,6 +138,11 @@ async function acceptPresentationRequest() {
 function rejectPresentationRequest() {
     chrome.tabs.sendMessage(window.tab_id, { type: 'aries_proof_request', status: 'rejected' });
     self.close();
+}
+
+async function getConnection(connection_id) {
+    connection = await $.get(window.aries_endpoint + '/connections/' + connection_id)
+    return connection;
 }
 
 $(document).ready(function () {

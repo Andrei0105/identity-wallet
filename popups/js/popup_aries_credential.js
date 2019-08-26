@@ -1,5 +1,5 @@
 function displayCredentialPresentationDetails() {
-    chrome.storage.local.get(['aries_credential_created_at', 'aries_endpoint', 'tab_id'], async function (storageData) {
+    chrome.storage.local.get(['aries_credential_created_at', 'aries_endpoint', 'tab_id', 'entity_name', 'entity_url', 'entity_message'], async function (storageData) {
         window.tab_id = storageData.tab_id;
         window.credential_created_at = storageData.aries_credential_created_at;
         window.aries_endpoint = storageData.aries_endpoint;
@@ -23,6 +23,14 @@ function displayCredentialPresentationDetails() {
                     });
                     console.log(newest_cred_exchange)
                 });
+        }
+        if (storageData.entity_name) {
+            document.querySelector('#received_from_entity').innerHTML = 'Credential offer received from ' + storageData.entity_name + ' available at ' + storageData.entity_url;
+        }
+        connection_details = await getConnection(newest_cred_exchange.connection_id);
+        document.querySelector('#label_and_endpoint').innerHTML = 'Sender Agent label: ' + connection_details.their_label;
+        if (storageData.entity_message) {
+            document.querySelector('#message_from_entity').innerHTML = storageData.entity_message;
         }
         window.aries_popup_cred_exchange_id = newest_cred_exchange.credential_exchange_id;
         chrome.storage.local.set({ 'aries_popup_cred_exchange_id': newest_cred_exchange.credential_exchange_id });
@@ -60,6 +68,11 @@ async function acceptCredential() {
 function rejectCredential() {
     chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'rejected' });
     self.close();
+}
+
+async function getConnection(connection_id) {
+    connection = await $.get(window.aries_endpoint + '/connections/' + connection_id)
+    return connection;
 }
 
 $(document).ready(function () {

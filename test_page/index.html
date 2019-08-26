@@ -254,12 +254,12 @@
 
         function notifyCredentialRequestWrapper() {
             credential_created_at = startCredentialExchangeAndGetUpdatedAt();
-            iw.notifyCredentialRequest({ data: { credential_created_at: credential_created_at } });
+            iw.notifyCredentialRequest({ data: { credential_created_at: credential_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You are receiving a credential.' } });
         }
 
         function notifyProofRequestWrapper() {
             proof_request_created_at = startProofExchangeAndGetUpdatedAt();
-            iw.notifyProofRequest({ data: { proof_request_created_at: proof_request_created_at } });
+            iw.notifyProofRequest({ data: { proof_request_created_at: proof_request_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You need to present proof.' } });
         }
 
         function useIW() {

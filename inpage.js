@@ -34,7 +34,10 @@ window.iw.notifyCredentialRequest =
     function notifyCredentialRequest(event) {
         window.postMessage({
             type: "aries-credential-request-initiated",
-            credential_created_at: event.data.credential_created_at
+            credential_created_at: event.data.credential_created_at,
+            entity_name: event.data.entity_name,
+            entity_url: event.data.entity_url,
+            entity_message: event.data.entity_message
         });
         iw.addMessageListener();
     }
@@ -43,7 +46,10 @@ window.iw.notifyProofRequest =
     function notifyProofRequest(event) {
         window.postMessage({
             type: "aries-proof-request-initiated",
-            proof_request_created_at: event.data.proof_request_created_at
+            proof_request_created_at: event.data.proof_request_created_at,
+            entity_name: event.data.entity_name,
+            entity_url: event.data.entity_url,
+            entity_message: event.data.entity_message
         });
         iw.addMessageListener();
     }
