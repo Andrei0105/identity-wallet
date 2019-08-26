@@ -26,7 +26,7 @@ function displayCredentialPresentationDetails() {
         }
 
         // retrieve the attribute names from the credential offer
-        attribute_names = newest_cred_exchange.credential_offer.key_correctness_proof.xr_cap.map(element => element[0]).filter(function(value, index, arr){
+        attribute_names = newest_cred_exchange.credential_offer.key_correctness_proof.xr_cap.map(element => element[0]).filter(function (value, index, arr) {
             return value != 'master_secret';
         });
 
@@ -65,8 +65,20 @@ async function requestAndDisplayCredential() {
 
 async function acceptCredential() {
     await $.post(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id + '/store',
-        function (data, status, jqXHR) {
+        async function (data, status, jqXHR) {
             console.log('Stored credential. Response:', data);
+            credential_data = undefined;
+            while (!credential_data) {
+                try {
+                    credential_data = await $.get(window.aries_endpoint + '/credential/' + data.credential_id)
+                    console.log('Credential: ', credential_data)
+                }
+                catch (err) {
+                    if (err.status === 404)
+                        console.log('Credential not yet stored!');
+                    await sleep(1000);
+                }
+            }
             chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'accepted' });
         });
     self.close();
