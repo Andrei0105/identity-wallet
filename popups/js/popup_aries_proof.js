@@ -45,9 +45,10 @@ function displayProof() {
 }
 
 function displayCredentialSelects(referents_to_cred_ids) {
-    function createSelect(parent, referent, cred_ids) {
+    function createSelect(parent, referent, referent_details) {
+        cred_ids = referent_details.credential_ids;
         label = document.createElement('label');
-        label.innerHTML = referent;
+        label.innerHTML = referent + '<br>' + referent_details.attr_name + ' ' + referent_details.req_value;
         parent.appendChild(label);
         select = document.createElement('select');
         select.id = referent;
@@ -71,16 +72,28 @@ function getCredentialsForPresentationReferents(presentation_exchange, correspon
     requested_attr_referents = Object.keys(presentation_exchange.presentation_request.requested_attributes)
     requested_pred_referents = Object.keys(presentation_exchange.presentation_request.requested_predicates)
 
+    console.log(presentation_exchange)
     // map referents to credential ids
     referents_to_cred_ids = {}
     corresponding_credentials.forEach(function (credential_details) {
         credential_id = credential_details.cred_info.referent;
         referents = credential_details.presentation_referents;
         referents.forEach(function (referent) {
-            if (typeof referents_to_cred_ids[referent] == 'undefined')
-                referents_to_cred_ids[referent] = [credential_id]
-            else
-                referents_to_cred_ids[referent].push(credential_id);
+            if (requested_attr_referents.includes(referent)) {
+                if (typeof referents_to_cred_ids[referent] == 'undefined')
+                    referents_to_cred_ids[referent] = { credential_ids: [credential_id], attr_name: presentation_exchange.presentation_request.requested_attributes[referent].name, req_value: '' }
+                else
+                    referents_to_cred_ids[referent].credential_ids.push(credential_id);
+            }
+            else if (requested_pred_referents.includes(referent)) {
+                if (typeof referents_to_cred_ids[referent] == 'undefined')
+                    referents_to_cred_ids[referent] = { credential_ids: [credential_id], attr_name: presentation_exchange.presentation_request.requested_predicates[referent].name, req_value: presentation_exchange.presentation_request.requested_predicates[referent].p_type + ' ' + presentation_exchange.presentation_request.requested_predicates[referent].p_value.toString() }
+                else
+                    referents_to_cred_ids[referent].credential_ids.push(credential_id);
+            }
+            else {
+                console.warn('Referent', referent, 'not found in either attributes or predicates.');
+            }
         });
     });
     console.log('Referents to credentials:', referents_to_cred_ids);
