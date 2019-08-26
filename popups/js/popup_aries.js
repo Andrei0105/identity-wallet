@@ -21,8 +21,13 @@ function acceptInvitation() {
             storageData.aries_invitation, function (data, status, jqXHR) {
                 connection_id = data.connection_id;
                 $.post(storageData.aries_endpoint + '/connections/' + connection_id + '/accept-invitation',
-                    function (data, status, jqXHR) {
+                    async function (data, status, jqXHR) {
                         console.log(data);
+                        connection_details = await $.get(storageData.aries_endpoint + '/connections/' + connection_id)
+                        while(connection_details.state != 'request') {
+                            console.log(connection_details.state);
+                            await sleep(1000);
+                        }
                         chrome.tabs.sendMessage(storageData.tab_id, { type: 'aries_connection', status: 'accepted' });
                         self.close();
                     });
@@ -42,3 +47,7 @@ $(document).ready(function () {
     $('#aries_accept').click(acceptInvitation);
     $('#aries_reject').click(rejectInvitation);
 });
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

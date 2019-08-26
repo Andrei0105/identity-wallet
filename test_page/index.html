@@ -37,6 +37,7 @@
     <script src="https://unpkg.com/blockstack@19.2.1/dist/blockstack.js"
         integrity="sha384-+qYCYoUGzsMLAzHm80c4DyhbWgHBBb2N0RFqsg7Lws5ljtBtj/IwpgxZkiR7j7lp"
         crossorigin="anonymous"></script>
+    <script src="config.js"></script>
     <script>
         var url = new URL(window.location.href);
         var ar = url.searchParams.get("authResponse");
@@ -146,25 +147,25 @@
 
         degree_schema_credential = '{\
   "credential_values": {"name": "Alice Smith", "age": "24", "degree": "Maths", "date": "2018-05-28"},\
-  "credential_definition_id": "UPwPYH1pNP33UCpHDe8Cg9:3:CL:20:default",\
-  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+  "credential_definition_id": "' + config_data.degree_cred_def_id + '",\
+  "connection_id": "' + config_data.connection_id + '" \
 }';
 
         person_schema_credential = '{\
   "credential_values": {"name": "Alice Smith", "age": "24"},\
-  "credential_definition_id": "UPwPYH1pNP33UCpHDe8Cg9:3:CL:13:default",\
-  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+  "credential_definition_id": "' + config_data.person_cred_def_id + '",\
+  "connection_id": "' + config_data.connection_id + '"\
 }';
 
         age_schema_credential = '{\
   "credential_values": {"age": "24"},\
-  "credential_definition_id": "UPwPYH1pNP33UCpHDe8Cg9:3:CL:15:default",\
-  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+  "credential_definition_id": "' + config_data.age_cred_def_id + '",\
+  "connection_id": "' + config_data.connection_id + '"\
 }';
         name_schema_credential = '{\
   "credential_values": {"name": "Alice"},\
-  "credential_definition_id": "UPwPYH1pNP33UCpHDe8Cg9:3:CL:17:default",\
-  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+  "credential_definition_id": "' + config_data.name_cred_def_id + '",\
+  "connection_id": "' + config_data.connection_id + '"\
 }';
 
         function startCredentialExchangeAndGetUpdatedAt() {
@@ -191,7 +192,7 @@
       "name": "age",\
       "p_type": ">=",\
       "restrictions": [\
-        {"cred_def_id" : "UPwPYH1pNP33UCpHDe8Cg9:3:CL:13:default"}\
+        {"cred_def_id" : "' + config_data.person_cred_def_id + '"}\
       ],\
       "p_value":  18\
     }\
@@ -200,13 +201,13 @@
     {\
       "name": "name",\
       "restrictions": [\
-        {"cred_def_id" : "UPwPYH1pNP33UCpHDe8Cg9:3:CL:13:default"}\
+        {"cred_def_id" : "' + config_data.person_cred_def_id + '"}\
       ]\
     }\
   ],\
   "name": "Proof of Age",\
   "version": "1.0",\
-  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+  "connection_id": "' + config_data.connection_id + '"\
 }';
 
         non_restricted_presentation = '{\
@@ -228,7 +229,7 @@
   ],\
   "name": "Proof of Age",\
   "version": "1.0",\
-  "connection_id": "3cdb9712-5fb8-48ba-8ac0-48c721859133"\
+  "connection_id": "' + config_data.connection_id + '"\
 }';
 
         function startProofExchangeAndGetUpdatedAt() {
