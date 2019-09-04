@@ -366,7 +366,6 @@
             if (typeof window.blockstack !== "undefined") {
                 authReq = blockstack.makeAuthRequest();
                 document.getElementById('blockstack_login_page').addEventListener('click', function () {
-                    console.log('here')
                     blockstack.redirectToSignInWithAuthRequest(authReq);
                 });
 
@@ -419,7 +418,7 @@
             });
             qr = jqXHR.responseText;
             console.log('Received OR code:', qr)
-            iw.sendUportQr(qr);
+            iw.sendUportQr(qr, 'request');
             setTimeout(checkUportServerResponse, 2000);
         }
 
@@ -435,7 +434,7 @@
                 return;
             }
             console.log('Received OR code:', qr)
-            iw.sendUportQr(qr);
+            iw.sendUportQr(qr, 'issue');
             setTimeout(checkUportServerResponse, 2000);
         }
     </script>

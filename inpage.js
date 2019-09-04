@@ -73,10 +73,11 @@ window.iw.sendUportDisclosureQr =
     }
 
 window.iw.sendUportQr =
-    function sendUportQr(qr_code) {
+    function sendUportQr(qr_code, qr_type) {
         window.postMessage({
             type: "uport-all-qr",
-            qr_code: qr_code
+            qr_code: qr_code,
+            qr_type: qr_type
         });
         iw.addMessageListener();
     }

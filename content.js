@@ -38,7 +38,7 @@ window.addEventListener('message', function (event) {
             }
         case 'uport-all-qr':
             {
-                isListenerAction({ type: 'uportQr', qr_code: message.qr_code }, 'uportQr');
+                isListenerAction({ type: 'uportQr', qr_code: message.qr_code, qr_type:message.qr_type }, 'uportQr');
                 break;
             }
         case 'r-blockstack-login':

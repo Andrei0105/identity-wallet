@@ -54,27 +54,27 @@ chrome.runtime.onMessage.addListener(
       case 'uportSelectiveDisclosureQr':
         {
           chrome.storage.local.set({ 'uport_selective_disclosure_qr': message.qr_code, 'tab_id': sender.tab.id });
-          window.open("popups/popup_uport_login.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
+          window.open("popups/popup_uport_all.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
       case 'uportQr':
         {
           // case for both selective disclosure and issue credential
-          chrome.storage.local.set({ 'uport_qr': message.qr_code, 'tab_id': sender.tab.id });
-          window.open("popups/popup_uport_login.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
+          chrome.storage.local.set({ 'uport_qr': message.qr_code, 'uport_qr_type': message.qr_type, 'tab_id': sender.tab.id });
+          window.open("popups/popup_uport_all.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
       case 'uportReceivedResponse':
         {
           // response from uPort was received. popup can be closed
-          popup = window.open("popups/popup_uport_login.html", "extension_popup");
+          popup = window.open("popups/popup_uport_all.html", "extension_popup");
           popup.close();
           break;
         }
         case 'uportServerResponseReceived':
         {
           // response from uPort server side app was received. popup can be closed
-          popup = window.open("popups/popup_uport_login.html", "extension_popup");
+          popup = window.open("popups/popup_uport_all.html", "extension_popup");
           popup.close();
           break;
         }
