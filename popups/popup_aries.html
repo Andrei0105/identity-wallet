@@ -6,23 +6,40 @@
     <script src="../libs/jquery.js"></script>
     <script src="js/popup_aries.js"></script>
     <meta charset="utf-8">
+    <title>Identity wallet - Aries Connection</title>
     <style>
         body {
             min-width: 300px;
             min-height: 400px;
+            height: 100%;
+            background-color: #eee;
+        }
+
+        .message_border {
+            border-style: solid;
+            border-color: gray;
+            border-width: 5px;
+        }
+
+        .buttons_div {
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translate(-50%, -50%);
+            margin: 0 auto;
         }
     </style>
 </head>
 
 <body id="body">
-    <div class="w-100" style="background-color: #eee;">
+    <div class="container h-100 w-100">
         <p class="text-center" id="received_from_entity"></p>
         <p class="text-center" id="label_and_endpoint"></p>
-        <p class="text-center" id="message_from_entity"></p>
-        The following connection invitation was received:
-        <p class="text-center" id="msg"></p>
+        <p class="text-center message_border" id="message_from_entity"></p>
+        <p class="text-center d-none"> The following connection invitation was received:</p>
+        <p class="text-center d-none" id="msg"></p>
 
-        <div class="text-center">
+        <div class="buttons_div">
             <button class="btn btn-primary" type="button" id='aries_accept'>Accept</button>
             <button class="btn btn-secondary" type="button" id='aries_reject'>Reject</button>
         </div>

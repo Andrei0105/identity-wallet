@@ -6,6 +6,7 @@ function displayProof() {
         window.proof_request_created_at = storageData.aries_proof_request_created_at;
         window.aries_endpoint = storageData.aries_endpoint;
         newest_presentation_exchange = undefined;
+        // TO DO: extract and display proof name
         while (typeof newest_presentation_exchange === 'undefined') {
             await sleep(1000);
             await $.get(storageData.aries_endpoint + '/presentation_exchange',
@@ -27,12 +28,14 @@ function displayProof() {
         if (storageData.entity_message) {
             document.querySelector('#message_from_entity').innerHTML = storageData.entity_message;
         }
+        document.querySelector('#proof_name').innerHTML = 'Presentation request name: ' + newest_presentation_exchange.presentation_request.name;
         corresponding_credentials = undefined;
         await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials',
             function (data, status, jqXHR) {
                 corresponding_credentials = data;
                 console.log('Corresponding credentials:', data)
             });
+            // TO DO: error if there are no credentials to fill the presentation
         window.referents_to_credentials = getCredentialsForPresentationReferents(newest_presentation_exchange, corresponding_credentials);
         ////// temporary for testing
         window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)[0]

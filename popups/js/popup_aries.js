@@ -28,6 +28,7 @@ function acceptInvitation() {
                             console.log(connection_details.state);
                             await sleep(1000);
                         }
+                        // TO DO: failure after an interval
                         chrome.tabs.sendMessage(storageData.tab_id, { type: 'aries_connection', status: 'accepted' });
                         self.close();
                     });

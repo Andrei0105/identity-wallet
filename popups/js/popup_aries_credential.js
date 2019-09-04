@@ -46,18 +46,22 @@ function displayCredentialPresentationDetails() {
 }
 
 async function requestAndDisplayCredential() {
-    document.querySelector('#default_msg').innerHTML = 'The following credential was received:';
+    document.querySelector('#attribute_msg').innerHTML = 'The following credential was received:';
     await $.post(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id + '/send-request')
     credential = await $.get(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id)
     while (credential.state != "credential_received") {
         await sleep(1000);
+        console.log('Credential state:', credential.state);
         credential = await $.get(window.aries_endpoint + '/credential_exchange/' + window.aries_popup_cred_exchange_id)
     }
     attributes = {}
+    attributes_string = '<ul>'
     for (attribute in credential.raw_credential.values) {
         attributes[attribute] = credential.raw_credential.values[attribute].raw;
+        attributes_string += '<li>' + attribute + ': ' + credential.raw_credential.values[attribute].raw + '</li>'
     }
-    document.querySelector('#msg').innerHTML = JSON.stringify(attributes);
+    attributes_string += '</ul>'
+    document.querySelector('#attributes').innerHTML = attributes_string;
     $("#aries_accept").html('Accept');
     $('#aries_accept').unbind('click', requestAndDisplayCredential);
     $('#aries_accept').click(acceptCredential);
@@ -74,11 +78,12 @@ async function acceptCredential() {
                     console.log('Credential: ', credential_data)
                 }
                 catch (err) {
+                    // TO DO: TIMEOUT
                     if (err.status === 404)
                         console.log('Credential not yet stored!');
                     await sleep(1000);
                 }
-            }
+            } //to do: send message in case of timeout expiration
             chrome.tabs.sendMessage(window.tab_id, { type: 'aries_credential', status: 'accepted' });
         });
     self.close();
