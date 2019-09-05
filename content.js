@@ -8,22 +8,15 @@ function injectScript(file, node) {
 
 injectScript(chrome.extension.getURL('inpage.js'), 'head');
 
-// window.pendingData = null;
 
 // Listener for messages from inpage.js (IS)
 window.addEventListener('message', function (event) {
     message = event.data;
     console.log('CS:', 'Message received:\n' + JSON.stringify(message));
     switch (message.type) {
-        case 'iw-up-rc':
+        case 'uport-requested-claims':
             {
-                chrome.storage.local.set({ 'requestedData': message });
-                // window.pendingData = messsage;
-                break;
-            }
-        case 'open-popup':
-            {
-                isListenerAction({ type: 'openPopup' }, 'openPopup');
+                isListenerAction({ type: 'uportRequestClaims', simple: message.simple, verified: message.verified}, 'uportRequestClaims');
                 break;
             }
         case 'uport-issue-credential-qr':
@@ -87,11 +80,9 @@ chrome.runtime.onMessage.addListener(
                     pListenerAction(pendingData, message.type);
                 }
                 break;
-            case "fillFields":
+            case "uport_claims_respomse":
                 {
-                    $("#name").val(message.name);
-                    $("#country").val(message.country);
-                    window.postMessage({ type: 'uport-claims', claims: message.data }, '*');
+                    window.postMessage({ type: 'uport_claims', claims: message.data }, '*');
                     break;
                 }
             case 'aries_connection':
@@ -117,7 +108,6 @@ chrome.runtime.onMessage.addListener(
 
 function isListenerAction(data, messageType) {
     switch (messageType) {
-        case 'openPopup':
         case 'blockstackLogin':
         case 'ariesConnectionInvite':
         case 'ariesCredentialExchangeStart':
@@ -127,6 +117,7 @@ function isListenerAction(data, messageType) {
         case 'uportQr':
         case 'uportReceivedResponse':
         case 'uportServerResponseReceived':
+        case 'uportRequestClaims':
             chrome.runtime.sendMessage(data);
             break;
         default:

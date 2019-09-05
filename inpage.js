@@ -4,12 +4,11 @@ window.iw.requestUportClaims =
     function requestUportClaims(event) {
         data = event.data;
         window.postMessage({
-            type: "iw-up-rc",
+            type: "uport-requested-claims",
             simple: data.simple,
             verified: data.verified
         });
         iw.addMessageListener();
-        iw.sendMessage('open-popup');
     }
 
 window.iw.requestBlockstackClaims =
@@ -149,7 +148,7 @@ function csListener(message) {
     message = message.data;
     console.log('IS:', 'Received message:', message);
     switch (message.type) {
-        case 'uport-claims':
+        case 'uport_claims':
             window.iw.requestedClaims = message.claims;
             break;
         case 'aries_connection_status':

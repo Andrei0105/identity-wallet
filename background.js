@@ -15,9 +15,9 @@ chrome.runtime.onMessage.addListener(
   function (message, sender) {
     console.log('BG:', 'Received message:', message);
     switch (message.type) {
-      case 'openPopup':
+      case 'uportRequestClaims':
         {
-          chrome.storage.local.set({ 'tab_id': sender.tab.id });
+          chrome.storage.local.set({ 'requestedData': message, 'tab_id': sender.tab.id });
           window.open("popups/popup_uport.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener(
           popup.close();
           break;
         }
-        case 'uportServerResponseReceived':
+      case 'uportServerResponseReceived':
         {
           // response from uPort server side app was received. popup can be closed
           popup = window.open("popups/popup_uport_all.html", "extension_popup");

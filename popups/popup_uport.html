@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Identity wallet - uPort</title>
     <style>
         body {
             min-width: 300px;
@@ -12,7 +13,6 @@
         }
 
         .center-div {
-            position: absolute;
             margin: auto;
             top: 0;
             right: 0;
@@ -22,15 +22,15 @@
             height: 100px;
             background-color: #ccc;
             border-radius: 3px;
-            vertical-align: middle;
         }
     </style>
 </head>
 
 <body id="body">
-    <div class="d-none" id="info-div"> Open the uPort app and scan the code:</div>
+        <p class="text-center" id="info-received">You are receiving a request to share uPort credentials. This will not disclose your uPort identity to the page.</p>
+    <p class="d-none text-center" id="info-div"> Open the uPort app and scan the code:</p>
     <div class="container d-flex h-100">
-        <div class="align-self-center center-div my-auto" id="center-div">
+        <div class="align-self-center center-div" id="center-div">
             Loading...
         </div>
     </div>
