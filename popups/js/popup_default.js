@@ -10,7 +10,13 @@ function getConnections() {
                     <td class="align-middle"><button class="btn btn-primary val" data-connection_id="'+ connection.connection_id + '" type="button">Remove</button></td>\
                     </tr>\
                     <tr id="c-' + connection.connection_id + '" class="collapse">\
-                    <td colspan="100">' + connection.connection_id + '</td>\
+                    <td colspan="100">Connection ID:<br>' + connection.connection_id + 
+                    '<br> State:<br>' + connection.state + 
+                    '<br> Created at:<br>' + connection.created_at + 
+                    '<br> Their label:<br>' + connection.their_label + 
+                    '<br> Their DID:<br>' + connection.their_did + 
+                    '<br> My DID:<br>' + connection.my_did + 
+                    '</td>\
                     </tr>');
                 });
                 $('.val').click(removeConnectionCb);
@@ -30,7 +36,9 @@ function getCredentialExchanges() {
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_exchange_id="'+ cred_ex.credential_exchange_id + '" type="button">Remove</button></td>\
                     </tr>\
                     <tr id="c-' + cred_ex.credential_exchange_id + '" class="collapse">\
-                    <td colspan="100">' + cred_ex.credential_exchange_id + '</td>\
+                    <td colspan="100">Credential exchange ID:<br>' + cred_ex.credential_exchange_id + 
+                    '<br> State:<br>' + cred_ex.state + 
+                    '<br> Connection ID:<br>' + cred_ex.connection_id + '</td>\
                     </tr>');
                 });
                 $('.val').click(removeCredentialExchangeCb);
@@ -45,6 +53,7 @@ function getCredentials() {
                 credentials = data.results;
                 credentials.forEach(function (credential) {
                     attrs_for_display = '';
+                    attrs_for_display_collapse = '<ul>'
                     for (attribute in credential.attrs) {
                         attr_for_display = attribute + ': ' + credential.attrs[attribute];
                         attrs_for_display += padShortenString(14, attr_for_display) + '<br/>'
@@ -53,13 +62,18 @@ function getCredentials() {
                             break;
                         }
                     }
+                    for (attribute in credential.attrs) {
+                        attr_for_display = '<li>' + attribute + ': ' + credential.attrs[attribute] + '</li>';
+                        attrs_for_display_collapse += attr_for_display
+                    }
+                    attrs_for_display_collapse += '</ul>'
                     $('#credentials_table > tbody:last-child').append('<tr class="clickable" data-toggle="collapse" data-target="#c-' + credential.referent + '" aria-expanded="true" aria-controls="c-' + credential.referent + '" align="center">\
                     <td class="align-middle">' + padShortenString(7, credential.referent) + '</td>\
                     <td class="align-middle">' + attrs_for_display + '</td>\
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_id="'+ credential.referent + '" type="button">Remove</button></td>\
                     </tr>\
                     <tr id="c-' + credential.referent + '" class="collapse">\
-                    <td colspan="100">' + credential.referent + '</td>\
+                    <td colspan="100">Credential ID:<br>' + credential.referent + '<br> Attributes:<br>' + attrs_for_display_collapse + '</td>\
                     </tr>');
                 });
                 $('.val').click(removeCredentialCb);

@@ -61,11 +61,11 @@
                             <form action="" class="form-inlin justify-content-center">
                                 <div class="form-group">
                                     <label class="sr-only">Name</label>
-                                    <input class="form-control" name="name" type="text" id="name">
+                                    <input class="form-control d-none" name="name" type="text" id="name">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only">Country</label>
-                                    <input class="form-control" name="country" type="text" id="country">
+                                    <input class="form-control d-none" name="country" type="text" id="country">
                                 </div>
                                 <div class="form-group">
                                     <button type="button" class="btn btn-success" id='uport_request_iw'>uPort request
@@ -93,7 +93,7 @@
                                         (via IW)</button>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-success" id='blockstack_login_page'>Blockstack
+                                    <button type="button" class="btn btn-success d-none" id='blockstack_login_page'>Blockstack
                                         Login
                                         (client test)</button>
                                 </div>
@@ -266,7 +266,7 @@
             if (typeof iw !== 'undefined') {
                 $(document).ready(function () {
                     window.iw.createAndStartUportObserver();
-                    $('#uport_request_iw').click({ simple: ['name', 'country'], verified: ['Example', 'Diploma'] },
+                    $('#uport_request_iw').click({ simple: ['name', 'country'], verified: ['Identity', 'Diploma'] },
                         iw.requestUportClaims);
                     $('#uport_request_client').click(uportLogin);
                     $('#uport_issue_client').click(uportIssue);
@@ -376,16 +376,16 @@
 
         function uportIssue() {
             const Connect = window.uportconnect
-            const uport = new Connect('MyDApp')
+            const uport = new Connect('Identity Wallet Test Page')
             uport.sendVerification({
                 exp: Math.floor(new Date().getTime() / 1000) + 30 * 24 * 60 * 60,
-                claim: { 'Example2': { 'Last Seen': `${new Date()}` } }
+                claim: { 'Status': { 'Last Seen': `${new Date()}` } }
             })
         }
 
         function uportLogin() {
             const Connect = window.uportconnect
-            const uport = new Connect('MyDApp')
+            const uport = new Connect('Identity Wallet Test Page')
 
             const reqID = 'disclosureReq'
             uport.requestDisclosure()
@@ -413,7 +413,7 @@
         function uportServerLogin() {
             jqXHR = $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8088',
+                url: 'http://localhost:8088/disclosure_request',
                 async: false
             });
             qr = jqXHR.responseText;

@@ -14,7 +14,11 @@ window.iw.requestUportClaims =
 window.iw.requestBlockstackClaims =
     function requestBlockstackClaims(event) {
         data = event.data;
-        iw.sendMessage('r-blockstack-login');
+        authReq = blockstack.makeAuthRequest();
+        window.postMessage({
+            type: "r-blockstack-login",
+            auth: authReq
+        });
     }
 
 window.iw.initiateAriesConnection =
@@ -122,27 +126,6 @@ window.iw.createAndStartUportObserver =
         callback = uPortObserverCallback;
         iw.createAndStartObserver(target_node, config, callback)
     }
-
-// Send message to content script (CS)
-window.iw.sendMessage = function sendMessage(type) {
-    switch (type) {
-        case 'open-popup':
-            window.postMessage({
-                type: "open-popup"
-            });
-            break;
-        case 'r-blockstack-login':
-            //generate auth request with the page's default parameters
-            authReq = blockstack.makeAuthRequest();
-            window.postMessage({
-                type: "r-blockstack-login",
-                auth: authReq
-            });
-            break;
-        default:
-            console.warn('Unrecognized message type.');
-    }
-}
 
 function csListener(message) {
     message = message.data;

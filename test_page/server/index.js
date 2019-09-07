@@ -23,11 +23,11 @@ const credentials = new Credentials({
     privateKey: '39c63b41e9b69cdf610ae23ddd6026eb826ad1902cfbcfa365c73edde52388af'
 })
 
-app.get('/', (req, res) => {
+app.get('/disclosure_request', (req, res) => {
     credentials.createDisclosureRequest({
         requested: ["name"],
         notifications: true,
-        callbackUrl: endpoint + '/callback'
+        callbackUrl: endpoint + '/callback_disclosure'
     }).then(requestToken => {
         console.log(decodeJWT(requestToken))  //log request token to console
         const uri = message.paramsToQueryString(message.messageToURI(requestToken), { callback_type: 'post' })
@@ -44,7 +44,7 @@ app.get('/resp', (req, res) => {
         responseReceived = false;
 })
 
-app.post('/callback', (req, res) => {
+app.post('/callback_disclosure', (req, res) => {
     const jwt = req.body.access_token
     console.log(jwt);
     responseReceived = true;
