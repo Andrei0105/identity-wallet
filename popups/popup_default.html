@@ -27,8 +27,15 @@
 </head>
 
 <body id="body">
-    <div class="container">
-        <h2>Indy</h2>
+    <table class="table menu-table" id="tech_table">
+        <thead>
+            <tr align="center">
+                <th class="w-50 align-middle clickable">Indy</th>
+                <th class="w-50 align-middle clickable">uPort</th>
+            </tr>
+        </thead>
+    </table>
+    <div class="container" id="indy_panel">
         <table class="table table-dark table-striped menu-table" id="pages_table">
             <thead>
                 <tr align="center">
@@ -49,7 +56,8 @@
             <tbody>
             </tbody>
         </table>
-        <table class="table table-dark table-hover table-responsive table-data table-striped d-none" id="credential_exchanges_table">
+        <table class="table table-dark table-hover table-responsive table-data table-striped d-none"
+            id="credential_exchanges_table">
             <thead>
                 <tr align="center">
                     <th style="width: 30%" class="align-middle">ID</th>
@@ -60,7 +68,8 @@
             <tbody>
             </tbody>
         </table>
-        <table class="table table-dark table-hover table-responsive table-data table-striped d-none" id="credentials_table">
+        <table class="table table-dark table-hover table-responsive table-data table-striped d-none"
+            id="credentials_table">
             <thead>
                 <tr align="center">
                     <th style="width: 30%" class="align-middle">ID</th>
@@ -72,6 +81,10 @@
             </tbody>
         </table>
 
+    </div>
+
+    <div class="container d-none" id="uport_panel">
+        This is the uPort panel.
     </div>
 
 </body>

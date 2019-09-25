@@ -10,13 +10,13 @@ function getConnections() {
                     <td class="align-middle"><button class="btn btn-primary val" data-connection_id="'+ connection.connection_id + '" type="button">Remove</button></td>\
                     </tr>\
                     <tr id="c-' + connection.connection_id + '" class="collapse">\
-                    <td colspan="100">Connection ID:<br>' + connection.connection_id + 
-                    '<br> State:<br>' + connection.state + 
-                    '<br> Created at:<br>' + connection.created_at + 
-                    '<br> Their label:<br>' + connection.their_label + 
-                    '<br> Their DID:<br>' + connection.their_did + 
-                    '<br> My DID:<br>' + connection.my_did + 
-                    '</td>\
+                    <td colspan="100">Connection ID:<br>' + connection.connection_id +
+                        '<br> State:<br>' + connection.state +
+                        '<br> Created at:<br>' + connection.created_at +
+                        '<br> Their label:<br>' + connection.their_label +
+                        '<br> Their DID:<br>' + connection.their_did +
+                        '<br> My DID:<br>' + connection.my_did +
+                        '</td>\
                     </tr>');
                 });
                 $('.val').click(removeConnectionCb);
@@ -36,9 +36,9 @@ function getCredentialExchanges() {
                     <td class="align-middle"><button class="btn btn-primary val" data-credential_exchange_id="'+ cred_ex.credential_exchange_id + '" type="button">Remove</button></td>\
                     </tr>\
                     <tr id="c-' + cred_ex.credential_exchange_id + '" class="collapse">\
-                    <td colspan="100">Credential exchange ID:<br>' + cred_ex.credential_exchange_id + 
-                    '<br> State:<br>' + cred_ex.state + 
-                    '<br> Connection ID:<br>' + cred_ex.connection_id + '</td>\
+                    <td colspan="100">Credential exchange ID:<br>' + cred_ex.credential_exchange_id +
+                        '<br> State:<br>' + cred_ex.state +
+                        '<br> Connection ID:<br>' + cred_ex.connection_id + '</td>\
                     </tr>');
                 });
                 $('.val').click(removeCredentialExchangeCb);
@@ -148,6 +148,20 @@ $(document).ready(function () {
                     $('#connections_table').addClass('d-none');
                     $('#credential_exchanges_table').addClass('d-none');
                     $('#credentials_table').removeClass('d-none');
+                    break;
+                }
+            case 'Indy':
+                {
+                    console.log('Clicked Indy');
+                    $('#indy_panel').removeClass('d-none');
+                    $('#uport_panel').addClass('d-none');
+                    break;
+                }
+            case 'uPort':
+                {
+                    console.log('Clicked uPort');
+                    $('#indy_panel').addClass('d-none');
+                    $('#uport_panel').removeClass('d-none');
                     break;
                 }
         }
