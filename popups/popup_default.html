@@ -7,6 +7,7 @@
     <script src="js/popup_default.js"></script>
     <script src="../libs/popper.js"></script>
     <script src="../libs/bootstrap.js"></script>
+    <script src="../libs/uport-connect.js"></script>
     <meta charset="utf-8">
     <style>
         body {
@@ -22,6 +23,18 @@
 
         .table-data {
             white-space: nowrap;
+        }
+
+        .center-div {
+            margin: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -84,7 +97,15 @@
     </div>
 
     <div class="container d-none" id="uport_panel">
-        This is the uPort panel.
+        <p class="input_display">Enter the JSON formatted credential below.</p>
+        <textarea class="input_display" style="width: 100%" rows="5" id="credential_input"></textarea>
+        <p class="input_display">Expiry date: <input type="date" class="input_display" id="expiry_date"></p>
+        <button class="btn btn-primary val input_display" type="button" id="send_credential">Send credential</button>
+        <div class="align-self-center center-div qr_display d-none" id="center-div"></div>
+        <div class="text-center d-none" id="return_to_input_div">
+            <br>
+            <button class="btn btn-primary val text-center" type="button" id="return_to_input">Go back</button>
+        </div>
     </div>
 
 </body>

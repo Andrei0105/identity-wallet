@@ -166,10 +166,74 @@ $(document).ready(function () {
                 }
         }
     });
+
+    $('#send_credential').click(function () {
+        var credential = $('#credential_input').val();
+        var expiry_date = new Date($('#expiry_date').val());
+        var expiry_timestamp = expiry_date.getTime();
+        const Connect = window.uportconnect;
+        const uport = new Connect('Identity Wallet');
+
+        var targetNode = document.body;
+        var config = { childList: true };
+        var observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+
+        const reqID = 'disclosureReq'
+        uport.requestDisclosure(undefined, reqID);
+        credential = JSON.parse(credential);
+        verification = { exp: expiry_timestamp, claim: credential };
+        console.log(verification);
+        uport.onResponse('disclosureReq').then(res => {
+            // $('.input_display').addClass('d-none');
+            // $('.qr_display').removeClass('d-none');
+            uport.sendVerification(verification, 'selfDefinedCredential');
+
+            // Currently the response event actually fires when the qr code is received
+            uport.onResponse('selfDefinedCredential').then(res => {
+                $('#return_to_input_div').removeClass('d-none');
+            });
+        });
+    });
+
+    $('#return_to_input').click(function () {
+        $('.input_display').removeClass('d-none');
+        $('.qr_display').addClass('d-none');
+        $('#return_to_input_div').addClass('d-none');
+    });
     getConnections();
     getCredentialExchanges();
     getCredentials();
 });
+
+var callback = function (mutationsList, observer) {
+    for (var mutation of mutationsList) {
+        if (mutation.addedNodes.length && mutation.addedNodes[0].id == 'uport-wrapper') {
+            console.log('P:', 'uPort wrapper was added');
+            var uportWrapperDiv = document.getElementById('uport-wrapper');
+            uportWrapperDiv.style.display = 'none';
+            var imgDiv = document.getElementById('uport__modal-main')
+            var imgs = imgDiv.getElementsByTagName("img");
+            console.log('P:', 'QR code src:\n', imgs[0].src);
+            show_image(imgs[0].src, 275, 275, 'qr-code')
+        }
+    }
+};
+
+function show_image(src, width, height, id, alt) {
+    $('.input_display').addClass('d-none');
+    $('.qr_display').removeClass('d-none');
+    var img = document.createElement("img");
+    img.src = src;
+    img.width = width;
+    img.height = height;
+    img.alt = alt;
+    img.id = id;
+    $('#center-div').html('');
+    $('#center-div').width(275);
+    $('#center-div').height(275);
+    $('#center-div').append(img);
+}
 
 function padShortenString(length, str) {
     if (str.length > length)
