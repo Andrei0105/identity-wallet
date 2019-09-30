@@ -24,7 +24,7 @@ function acceptInvitation() {
                     async function (data, status, jqXHR) {
                         console.log(data);
                         connection_details = await $.get(storageData.aries_endpoint + '/connections/' + connection_id)
-                        while(connection_details.state != 'request') {
+                        while (connection_details.state != 'request') {
                             console.log(connection_details.state);
                             await sleep(1000);
                         }
@@ -44,7 +44,15 @@ function rejectInvitation() {
 }
 
 $(document).ready(function () {
-    displayInvitation();
+    chrome.storage.local.get(['aries_endpoint'], async function (storageData) {
+        agentAvailable = await utils.checkAgentAvailability(storageData.aries_endpoint);
+        if (agentAvailable) {
+            displayInvitation();
+        }
+        else {
+            alert('Agent not available. Check agent endpoint settings.')
+        }
+    });
     $('#aries_accept').click(acceptInvitation);
     $('#aries_reject').click(rejectInvitation);
 });
