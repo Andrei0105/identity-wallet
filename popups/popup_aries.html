@@ -33,7 +33,7 @@
 </head>
 
 <body id="body">
-    <div class="container h-100 w-100">
+    <div class="container h-100 w-100" id="main_div">
         <p class="text-center" id="received_from_entity"></p>
         <p class="text-center" id="label_and_endpoint"></p>
         <p class="text-center message_border" id="message_from_entity"></p>
@@ -43,6 +43,12 @@
         <div class="buttons_div">
             <button class="btn btn-primary" type="button" id='aries_accept'>Accept</button>
             <button class="btn btn-secondary" type="button" id='aries_reject'>Reject</button>
+        </div>
+    </div>
+    <div class="container h-100 w-100 d-none" id="error_div">
+        <p class="text-center" id="error_msg"></p>
+        <div class="buttons_div">
+            <button class="btn btn-secondary" type="button" id="close_popup">Close</button>
         </div>
     </div>
 </body>

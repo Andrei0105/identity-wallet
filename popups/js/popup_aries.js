@@ -43,6 +43,16 @@ function rejectInvitation() {
     });
 }
 
+function displayError() {
+    $('#main_div').addClass('d-none');
+    $('#error_div').removeClass('d-none');
+    $('#error_msg').html('Agent not available. Check agent endpoint settings.');
+}
+
+function closePopup() {
+    self.close();
+}
+
 $(document).ready(function () {
     chrome.storage.local.get(['aries_endpoint'], async function (storageData) {
         agentAvailable = await utils.checkAgentAvailability(storageData.aries_endpoint);
@@ -50,11 +60,12 @@ $(document).ready(function () {
             displayInvitation();
         }
         else {
-            alert('Agent not available. Check agent endpoint settings.')
+            displayError();
         }
     });
     $('#aries_accept').click(acceptInvitation);
     $('#aries_reject').click(rejectInvitation);
+    $('#close_popup').click(closePopup);
 });
 
 function sleep(ms) {
