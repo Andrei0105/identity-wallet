@@ -25,23 +25,30 @@ function displayCredentialPresentationDetails() {
                 });
         }
 
-        // retrieve the attribute names from the credential offer
-        attribute_names = newest_cred_exchange.credential_offer.key_correctness_proof.xr_cap.map(element => element[0]).filter(function (value, index, arr) {
-            return value != 'master_secret';
-        });
+        connection_id = newest_cred_exchange.connection_id;
+        connectionAvailable = await utils.checkConnection(storageData.aries_endpoint, connection_id);
+        if (connectionAvailable) {
+            // retrieve the attribute names from the credential offer
+            attribute_names = newest_cred_exchange.credential_offer.key_correctness_proof.xr_cap.map(element => element[0]).filter(function (value, index, arr) {
+                return value != 'master_secret';
+            });
 
-        document.querySelector('#attribute_names').innerHTML = 'The credential offer contains the following attributes: ' + attribute_names.join(', ') + '.';
-        if (storageData.entity_name) {
-            document.querySelector('#received_from_entity').innerHTML = 'Credential offer received from ' + storageData.entity_name + ' available at ' + storageData.entity_url;
+            document.querySelector('#attribute_names').innerHTML = 'The credential offer contains the following attributes: ' + attribute_names.join(', ') + '.';
+            if (storageData.entity_name) {
+                document.querySelector('#received_from_entity').innerHTML = 'Credential offer received from ' + storageData.entity_name + ' available at ' + storageData.entity_url;
+            }
+            connection_details = await getConnection(newest_cred_exchange.connection_id);
+            document.querySelector('#label_and_endpoint').innerHTML = 'Sender Agent label: ' + connection_details.their_label;
+            if (storageData.entity_message) {
+                document.querySelector('#message_from_entity').innerHTML = storageData.entity_message;
+            }
+            window.aries_popup_cred_exchange_id = newest_cred_exchange.credential_exchange_id;
+            chrome.storage.local.set({ 'aries_popup_cred_exchange_id': newest_cred_exchange.credential_exchange_id });
+            document.querySelector('#msg').innerHTML = JSON.stringify(newest_cred_exchange);
         }
-        connection_details = await getConnection(newest_cred_exchange.connection_id);
-        document.querySelector('#label_and_endpoint').innerHTML = 'Sender Agent label: ' + connection_details.their_label;
-        if (storageData.entity_message) {
-            document.querySelector('#message_from_entity').innerHTML = storageData.entity_message;
+        else {
+            displayError('Connection not available.');
         }
-        window.aries_popup_cred_exchange_id = newest_cred_exchange.credential_exchange_id;
-        chrome.storage.local.set({ 'aries_popup_cred_exchange_id': newest_cred_exchange.credential_exchange_id });
-        document.querySelector('#msg').innerHTML = JSON.stringify(newest_cred_exchange);
     });
 }
 
@@ -99,10 +106,29 @@ async function getConnection(connection_id) {
     return connection;
 }
 
+function displayError(message) {
+    $('#main_div').addClass('d-none');
+    $('#error_div').removeClass('d-none');
+    $('#error_msg').html(message);
+}
+
+function closePopup() {
+    self.close();
+}
+
 $(document).ready(function () {
-    displayCredentialPresentationDetails();
+    chrome.storage.local.get(['aries_endpoint'], async function (storageData) {
+        agentAvailable = await utils.checkAgentAvailability(storageData.aries_endpoint);
+        if (agentAvailable) {
+            displayCredentialPresentationDetails();
+        }
+        else {
+            displayError('Agent not available. Check agent endpoint settings.');
+        }
+    });
     $('#aries_accept').click(requestAndDisplayCredential);
     $('#aries_reject').click(rejectCredential);
+    $('#close_popup').click(closePopup);
 });
 
 function sortByDate(a, b) {
