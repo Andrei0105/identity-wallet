@@ -26,7 +26,8 @@ function displayCredentialPresentationDetails() {
         }
 
         connection_id = newest_cred_exchange.connection_id;
-        connectionAvailable = await utils.checkConnection(storageData.aries_endpoint, connection_id);
+        // disable check connection since the page's agent will not be able to reply to the ping
+        connectionAvailable = true; //await utils.checkConnection(storageData.aries_endpoint, connection_id);
         if (connectionAvailable) {
             // retrieve the attribute names from the credential offer
             attribute_names = newest_cred_exchange.credential_offer.key_correctness_proof.xr_cap.map(element => element[0]).filter(function (value, index, arr) {

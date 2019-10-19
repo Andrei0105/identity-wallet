@@ -93,7 +93,8 @@
                                         (via IW)</button>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-success d-none" id='blockstack_login_page'>Blockstack
+                                    <button type="button" class="btn btn-success d-none"
+                                        id='blockstack_login_page'>Blockstack
                                         Login
                                         (client test)</button>
                                 </div>
@@ -178,6 +179,8 @@
             var jqXHR = $.ajax({
                 type: 'POST',
                 url: config_data.agent_endpoint + 'credential_exchange/send',
+                // comment the previous line and uncomment the next to log the send-offer encrypted message
+                // url: config_data.agent_endpoint + 'credential_exchange/send-offer-v2',
                 // hardcoded test credential exchange
                 data: data,
                 async: false
@@ -237,6 +240,9 @@
             var jqXHR = $.ajax({
                 type: 'POST',
                 url: config_data.agent_endpoint + 'presentation_exchange/send_request',
+                // comment the previous line and uncomment the next to log the send-offer encrypted message
+                // url: config_data.agent_endpoint + 'presentation_exchange/send_request_v2',
+                // also comment line 249
                 // hardcoded example proof request
                 data: data,
                 async: false
@@ -313,7 +319,11 @@
                                             // At this point, the response should have state 'response'
                                             // The connection is active, the page can check by issuing a GET /connections
                                             console.log('PAGE:', 'Page agent issuing accept-request. Response: ', data);
-                                            //
+                                            // uncomment the following lines to get the send-ping encoded message required to complete the connection protocol
+                                            // $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/send-ping-v2',
+                                            //     function (data, status, jqXHR) {
+                                            //         console.log('PAGE:', 'Page agent issuing send ping: ', data);
+                                            //     });
                                         });
                                 }
                             });
