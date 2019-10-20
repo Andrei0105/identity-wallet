@@ -1,4 +1,9 @@
-window.iw = { name: 'identitywallet' }
+// passing messages via the extension is always accepted by the user's agent
+// this functionality is enabled on the page's agent
+// however the extension needs to know which communication channel will be used
+// until fixed to specify this some other way (e.g. message type)
+// inpage_messages is true if message passing via the extension is used
+window.iw = { name: 'identitywallet', inpage_messages: true }
 
 window.iw.requestUportClaims =
     function requestUportClaims(event) {

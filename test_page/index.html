@@ -134,6 +134,9 @@
     </section>
 
     <script>
+        // this function is used for all connection establishing cases since
+        // the invitation is not encrypted
+        // the user's agent generates his keys when accepting the invitation
         function getInvitation() {
             // generate a connection invitation on the page's agent
             // this should be managed by the page
@@ -314,17 +317,28 @@
                                 if (state !== 'request')
                                     setTimeout(getState, 1000);
                                 else {
-                                    $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/accept-request',
-                                        function (data, status, jqXHR) {
-                                            // At this point, the response should have state 'response'
-                                            // The connection is active, the page can check by issuing a GET /connections
-                                            console.log('PAGE:', 'Page agent issuing accept-request. Response: ', data);
-                                            // uncomment the following lines to get the send-ping encoded message required to complete the connection protocol
-                                            // $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/send-ping-v2',
-                                            //     function (data, status, jqXHR) {
-                                            //         console.log('PAGE:', 'Page agent issuing send ping: ', data);
-                                            //     });
-                                        });
+                                    if (iw.inpage_messages === true) {
+                                        $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/accept-request-v2',
+                                            function (data, status, jqXHR) {
+                                                // At this point, the response should have state 'response'
+                                                // The connection is active, the page can check by issuing a GET /connections
+                                                console.log('PAGE:', 'Page agent issuing accept-request. Response: ', data);
+                                                // if the page's agent supports inpage messages send the trusted ping
+                                                // required to complete the connection protocol
+                                                $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/send-ping-v2',
+                                                    function (data, status, jqXHR) {
+                                                        console.log('PAGE:', 'Page agent issuing send ping: ', data);
+                                                    });
+                                            });
+                                    }
+                                    else {
+                                        $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/accept-request',
+                                            function (data, status, jqXHR) {
+                                                // At this point, the response should have state 'response'
+                                                // The connection is active, the page can check by issuing a GET /connections
+                                                console.log('PAGE:', 'Page agent issuing accept-request. Response: ', data);
+                                            });
+                                    }
                                 }
                             });
                     }
