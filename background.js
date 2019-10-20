@@ -45,6 +45,15 @@ chrome.runtime.onMessage.addListener(
           window.open("popups/popup_aries_proof.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }
+      case 'ariesDirectMessage':
+        {
+          // to do: endpoint in options
+          $.post('agent_messaging_endpoint', message.message,
+            function (data, status, jqXHR) {
+              console.log('BG:', 'Response from raw message: ', data);
+            });
+          break;
+        }
       case 'uportIssueCredentialQr':
         {
           chrome.storage.local.set({ 'uport_issue_credetial_qr': message.qr_code, 'tab_id': sender.tab.id });

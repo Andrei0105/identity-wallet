@@ -16,7 +16,7 @@ window.addEventListener('message', function (event) {
     switch (message.type) {
         case 'uport-requested-claims':
             {
-                isListenerAction({ type: 'uportRequestClaims', simple: message.simple, verified: message.verified}, 'uportRequestClaims');
+                isListenerAction({ type: 'uportRequestClaims', simple: message.simple, verified: message.verified }, 'uportRequestClaims');
                 break;
             }
         case 'uport-issue-credential-qr':
@@ -31,7 +31,7 @@ window.addEventListener('message', function (event) {
             }
         case 'uport-all-qr':
             {
-                isListenerAction({ type: 'uportQr', qr_code: message.qr_code, qr_type:message.qr_type }, 'uportQr');
+                isListenerAction({ type: 'uportQr', qr_code: message.qr_code, qr_type: message.qr_type }, 'uportQr');
                 break;
             }
         case 'r-blockstack-login':
@@ -52,6 +52,11 @@ window.addEventListener('message', function (event) {
         case 'aries-proof-request-initiated':
             {
                 isListenerAction({ type: 'ariesProofExchangeStart', proof_request_created_at: message.proof_request_created_at, entity_name: message.entity_name, entity_url: message.entity_url, entity_message: message.entity_message }, 'ariesProofExchangeStart');
+                break;
+            }
+        case 'aries-direct-message':
+            {
+                isListenerAction({ type: 'ariesDirectMessage', message: message.message }, 'ariesDirectMessage');
                 break;
             }
         case 'uport-received-response':
@@ -112,6 +117,7 @@ function isListenerAction(data, messageType) {
         case 'ariesConnectionInvite':
         case 'ariesCredentialExchangeStart':
         case 'ariesProofExchangeStart':
+        case 'ariesDirectMessage':
         case 'uportIssueCredentialQr':
         case 'uportSelectiveDisclosureQr':
         case 'uportQr':

@@ -13,6 +13,7 @@
   "options_page": "popups/options.html",
   "background": {
     "scripts": [
+      "libs/jquery.js",
       "background.js"
     ],
     "persistent": false

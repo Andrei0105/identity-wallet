@@ -323,11 +323,13 @@
                                                 // At this point, the response should have state 'response'
                                                 // The connection is active, the page can check by issuing a GET /connections
                                                 console.log('PAGE:', 'Page agent issuing accept-request. Response: ', data);
+                                                iw.sendAriesDirectMessage({ data: { message: data } })
                                                 // if the page's agent supports inpage messages send the trusted ping
                                                 // required to complete the connection protocol
                                                 $.post(config_data.agent_endpoint + 'connections/' + window.requestedConnectionId + '/send-ping-v2',
                                                     function (data, status, jqXHR) {
                                                         console.log('PAGE:', 'Page agent issuing send ping: ', data);
+                                                        iw.sendAriesDirectMessage({ data: { message: data } })
                                                     });
                                             });
                                     }

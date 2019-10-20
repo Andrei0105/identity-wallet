@@ -62,6 +62,14 @@ window.iw.notifyProofRequest =
         iw.addMessageListener();
     }
 
+window.iw.sendAriesDirectMessage =
+    function sendAriesDirectMessage(event) {
+        window.postMessage({
+            type: "aries-direct-message",
+            message: event.data.message
+        });
+    }
+
 window.iw.sendUportIssueQr =
     function sendUportIssueQr(qr_code) {
         window.postMessage({
