@@ -13,13 +13,18 @@
     <p class="text-center" id="current_agent"> </p>
     <form>
       <div class="form-group">
-        <label for="inputAgentEndpoint">Agent endpoint</label>
+        <label for="inputAgentEndpoint">Agent management endpoint</label>
         <input type="text" class="form-control" id="agent_endpoint" aria-describedby="emailHelp"
           placeholder="Enter endpoint">
       </div>
       <div class="form-group">
-        <label for="inputAgentApiKey">Agent API key</label>
+        <label for="inputAgentApiKey">Agent management API key</label>
         <input type="text" class="form-control" id="agent_endpoint_api_key" placeholder="Enter API key">
+      </div>
+      <div class="form-group">
+        <label for="inputAgentHttpEndpoint">Agent HTTP endpoint</label>
+        <input type="text" class="form-control" id="agent_http_endpoint" aria-describedby="emailHelp"
+          placeholder="Enter HTTP endpoint">
       </div>
       <button type="submit" class="btn btn-primary" id="save_agent">Update</button>
     </form>

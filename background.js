@@ -47,11 +47,12 @@ chrome.runtime.onMessage.addListener(
         }
       case 'ariesDirectMessage':
         {
-          // to do: endpoint in options
-          $.post('agent_messaging_endpoint', message.message,
-            function (data, status, jqXHR) {
-              console.log('BG:', 'Response from raw message: ', data);
-            });
+          chrome.storage.local.get(['aries_http_endpoint'], function (storageData) {
+            $.post(storageData.aries_http_endpoint, message.message,
+              function (data, status, jqXHR) {
+                console.log('BG:', 'Response from raw message: ', data);
+              });
+          });
           break;
         }
       case 'uportIssueCredentialQr':
