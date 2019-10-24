@@ -46,7 +46,7 @@ window.addEventListener('message', function (event) {
             }
         case 'aries-credential-request-initiated':
             {
-                isListenerAction({ type: 'ariesCredentialExchangeStart', credential_created_at: message.credential_created_at, entity_name: message.entity_name, entity_url: message.entity_url, entity_message: message.entity_message }, 'ariesCredentialExchangeStart');
+                isListenerAction({ type: 'ariesCredentialExchangeStart', credential_created_at: message.credential_created_at, entity_name: message.entity_name, entity_url: message.entity_url, entity_message: message.entity_message, comm_type: message.comm_type }, 'ariesCredentialExchangeStart');
                 break;
             }
         case 'aries-proof-request-initiated':

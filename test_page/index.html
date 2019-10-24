@@ -179,17 +179,27 @@
             // should use /credential-exchage/send to start a cred exchange;
             // the credential exchange id must be sent to the page
             data = eval(document.getElementById('sel_cred').value)
-            var jqXHR = $.ajax({
+            var jqXHR = undefined;
+            if (iw.inpage_messages === true) {
+                jqXHR = $.ajax({
                 type: 'POST',
-                url: config_data.agent_endpoint + 'credential_exchange/send',
-                // comment the previous line and uncomment the next to log the send-offer encrypted message
-                // url: config_data.agent_endpoint + 'credential_exchange/send-offer-v2',
-                // hardcoded test credential exchange
+                url: config_data.agent_endpoint + 'credential_exchange/send-offer-v2',
                 data: data,
                 async: false
-            });
-            console.log('Generated credential exchange:', jqXHR.responseJSON)
-            return jqXHR.responseJSON.created_at;
+                });
+                console.log('Generated credential exchange:', jqXHR.responseJSON)
+                window.cred_ex_id = jqXHR.responseJSON.id;
+                return { timestamp: Date.now(), message: jqXHR.responseJSON.message };
+            } else {
+                jqXHR = $.ajax({
+                type: 'POST',
+                url: config_data.agent_endpoint + 'credential_exchange/send',
+                data: data,
+                async: false
+                });
+                console.log('Generated credential exchange:', jqXHR.responseJSON)
+                return { timestamp: jqXHR.responseJSON.created_at, message: undefined };
+            }
         }
 
         person_schema_presentation = '{\
@@ -262,8 +272,30 @@
         }
 
         function notifyCredentialRequestWrapper() {
-            credential_created_at = startCredentialExchangeAndGetUpdatedAt();
-            iw.notifyCredentialRequest({ data: { credential_created_at: credential_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You are receiving a credential.' } });
+            credential_created_at = startCredentialExchangeAndGetUpdatedAt().timestamp;
+            message = startCredentialExchangeAndGetUpdatedAt().message;
+            iw.sendAriesDirectMessage({ data: { message: message } })
+            iw.notifyCredentialRequest({ data: { comm_type: message?'extension':'direct', credential_created_at: credential_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You are receiving a credential.' } });
+            setTimeout(trySendCredential, 1500);
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function trySendCredential() {
+            if(!window.cred_ex_id) {
+                setTimeout(trySendCredential, 1500);
+            }
+            else {
+                credential = await $.get(config_data.agent_endpoint  + 'credential_exchange/' + window.cred_ex_id)
+                while (credential.state != "request_received") {
+                    await sleep(1000);
+                    console.log('Credential state:', credential.state);
+                    credential = await $.get(config_data.agent_endpoint  + 'credential_exchange/' + window.cred_ex_id)
+                }
+                console.log('Credential state:', credential.state);
+            }
         }
 
         function notifyProofRequestWrapper() {

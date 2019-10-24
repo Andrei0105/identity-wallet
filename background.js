@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener(
         }
       case 'ariesCredentialExchangeStart':
         {
-          chrome.storage.local.set({ 'aries_credential_created_at': message.credential_created_at, 'tab_id': sender.tab.id, 'entity_name': message.entity_name, 'entity_url': message.entity_url, 'entity_message': message.entity_message });
+          chrome.storage.local.set({ 'aries_credential_created_at': message.credential_created_at, 'tab_id': sender.tab.id, 'entity_name': message.entity_name, 'entity_url': message.entity_url, 'entity_message': message.entity_message, 'comm_type': message.comm_type });
           window.open("popups/popup_aries_credential.html", "extension_popup", "width=350,height=450,status=no,scrollbars=yes,resizable=no");
           break;
         }

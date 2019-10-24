@@ -45,7 +45,8 @@ window.iw.notifyCredentialRequest =
             credential_created_at: event.data.credential_created_at,
             entity_name: event.data.entity_name,
             entity_url: event.data.entity_url,
-            entity_message: event.data.entity_message
+            entity_message: event.data.entity_message,
+            comm_type: event.data.comm_type
         });
         iw.addMessageListener();
     }
