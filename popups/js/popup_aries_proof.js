@@ -29,21 +29,27 @@ function displayProof() {
             document.querySelector('#message_from_entity').innerHTML = storageData.entity_message;
         }
         document.querySelector('#proof_name').innerHTML = 'Presentation request name: ' + newest_presentation_exchange.presentation_request.name;
-        corresponding_credentials = undefined;
-        await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials',
-            function (data, status, jqXHR) {
-                corresponding_credentials = data;
-                console.log('Corresponding credentials:', data)
-            });
-            // TO DO: error if there are no credentials to fill the presentation
-        window.referents_to_credentials = getCredentialsForPresentationReferents(newest_presentation_exchange, corresponding_credentials);
         ////// temporary for testing
-        window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)[0]
-        window.pred_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_predicates)[0]
+        window.attr_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_attributes)
+        window.pred_ref = Object.keys(newest_presentation_exchange.presentation_request.requested_predicates)
+        //////
+        referents = window.attr_ref.concat(window.pred_ref)
+
+        // retrieve the credentials for all referents
+        corresponding_credentials = [];
+        for (referent of referents) {
+            await $.get(storageData.aries_endpoint + '/presentation_exchange/' + newest_presentation_exchange.presentation_exchange_id + '/credentials/' + referent,
+                function (data, status, jqXHR) {
+                    corresponding_credentials = corresponding_credentials.concat(data);
+                });
+            // TO DO: error if there are no credentials to fill the presentation
+        }
+        console.log('Corresponding credentials:', corresponding_credentials)
+        window.referents_to_credentials = getCredentialsForPresentationReferents(newest_presentation_exchange, corresponding_credentials);
         //////
         window.aries_presentation_exchange_id = newest_presentation_exchange.presentation_exchange_id;
         document.querySelector('#msg').innerHTML = JSON.stringify(newest_presentation_exchange);
-        displayCredentialSelects(referents_to_credentials);
+        displayCredentialSelects(window.referents_to_credentials);
     });
 }
 
@@ -122,6 +128,11 @@ function createPresentation(referents_to_credentials) {
     // }'
 
     referents_to_credentials = window.referents_to_credentials;
+
+    // should be temporary
+    requested_attr_referents = window.attr_ref;
+    requested_pred_referents = window.pred_ref;
+    console.log(window.attr_ref, window.pred_ref);
 
     // generate the presentation
     presentation = { self_attested_attributes: {}, requested_attributes: {}, requested_predicates: {} };

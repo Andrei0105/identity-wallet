@@ -254,19 +254,30 @@
 
         function startProofExchangeAndGetUpdatedAt() {
             data = eval(document.getElementById('sel_proof').value)
-            var jqXHR = $.ajax({
-                type: 'POST',
-                url: config_data.agent_endpoint + 'presentation_exchange/send_request',
-                // comment the previous line and uncomment the next to log the send-offer encrypted message
-                // url: config_data.agent_endpoint + 'presentation_exchange/send_request_v2',
-                // also comment line 249
-                // hardcoded example proof request
-                data: data,
-                async: false
-            });
-            window.generatedPresentationRequestId = jqXHR.responseJSON.presentation_exchange_id
-            console.log('Generated proof request:', jqXHR.responseText)
-            return Date.now().toString();
+            if (iw.inpage_messages === true) {
+                var jqXHR = $.ajax({
+                    type: 'POST',
+                    url: config_data.agent_endpoint + 'presentation_exchange/send_request_v2',
+                    data: data,
+                    async: false
+                });
+                response = jqXHR.responseJSON;
+                console.log('Generated proof request:', response)
+                response = JSON.parse(jqXHR.responseJSON);
+                window.generatedPresentationRequestId = response.id
+                return { timestamp: Date.now(), message: JSON.stringify(response.message) };
+            }
+            else {
+                var jqXHR = $.ajax({
+                    type: 'POST',
+                    url: config_data.agent_endpoint + 'presentation_exchange/send_request',
+                    data: data,
+                    async: false
+                });
+                window.generatedPresentationRequestId = jqXHR.responseJSON.presentation_exchange_id
+                console.log('Generated proof request:', jqXHR.responseText)
+                return { timestamp: Date.now(), message: JSON.stringify(response.message) };
+            }
         }
 
         function initiateAriesConnectionWrapper() {
@@ -302,7 +313,7 @@
                 console.log('Credential state:', credential.state);
                 if (credential.state == 'request_received') {
                     $.post(config_data.agent_endpoint + 'credential_exchange/' + window.cred_ex_id + '/issue-v2',
-                    // same credential values as in the offer
+                        // same credential values as in the offer
                         '{ \
                         "credential_values": {"name": "Bob", "age": 18} \
                         } ',
@@ -314,7 +325,10 @@
         }
 
         function notifyProofRequestWrapper() {
-            proof_request_created_at = startProofExchangeAndGetUpdatedAt();
+            obj = startProofExchangeAndGetUpdatedAt()
+            proof_request_created_at = obj.timestamp;
+            message = obj.message;
+            iw.sendAriesDirectMessage({ data: { message: message } })
             iw.notifyProofRequest({ data: { proof_request_created_at: proof_request_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You need to present proof.' } });
         }
 
