@@ -3,7 +3,7 @@
 // however the extension needs to know which communication channel will be used
 // until fixed to specify this some other way (e.g. message type)
 // inpage_messages is true if message passing via the extension is used
-window.iw = { name: 'identitywallet', inpage_messages: true }
+window.iw = { name: 'identitywallet', inpage_messages: undefined }
 
 window.iw.requestUportClaims =
     function requestUportClaims(event) {
@@ -145,6 +145,9 @@ function csListener(message) {
     message = message.data;
     console.log('IS:', 'Received message:', message);
     switch (message.type) {
+        case 'inpage_messaging':
+            window.iw.inpage_messages = message.value;
+            break;
         case 'uport_claims':
             window.iw.requestedClaims = message.claims;
             break;
@@ -182,6 +185,17 @@ function csListener(message) {
             console.warn('IS:', 'Unrecognized message type received.');
     }
 }
+
+function receive_inpage_messaging(message) {
+    message = message.data;
+    if (message.type == 'inpage_messaging') {
+        console.log('IS:', 'Setting inpage messaging', message.value);
+        window.iw.inpage_messages = message.value;
+    }
+}
+
+window.addEventListener('message', receive_inpage_messaging, true);
+
 
 // Listener for messages from content script (CS)
 window.iw.addMessageListener = function addMessageListener() {

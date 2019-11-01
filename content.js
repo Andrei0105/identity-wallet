@@ -8,6 +8,17 @@ function injectScript(file, node) {
 
 injectScript(chrome.extension.getURL('inpage.js'), 'head');
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+chrome.storage.local.get(['inpage_messaging'], async function (storageData) {
+    // temporary until detection when script was injected
+    await sleep(2000);
+    window.postMessage({ type: 'inpage_messaging', value: storageData.inpage_messaging }, '*');
+    console.log('CS:', 'Sent inpage messaging to page: ', storageData.inpage_messaging)
+});
+
 
 // Listener for messages from inpage.js (IS)
 window.addEventListener('message', function (event) {
