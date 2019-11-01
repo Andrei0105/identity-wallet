@@ -290,9 +290,11 @@
             obj = startCredentialExchangeAndGetUpdatedAt()
             credential_created_at = obj.timestamp;
             message = obj.message;
-            iw.sendAriesDirectMessage({ data: { message: message } })
+            if (iw.inpage_message) {
+                iw.sendAriesDirectMessage({ data: { message: message } })
+                setTimeout(trySendCredential, 1500, 'request_received');
+            }
             iw.notifyCredentialRequest({ data: { comm_type: message ? 'extension' : 'direct', credential_created_at: credential_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You are receiving a credential.' } });
-            setTimeout(trySendCredential, 1500, 'request_received');
         }
 
         function sleep(ms) {
@@ -328,7 +330,9 @@
             obj = startProofExchangeAndGetUpdatedAt()
             proof_request_created_at = obj.timestamp;
             message = obj.message;
-            iw.sendAriesDirectMessage({ data: { message: message } })
+            if (iw.inpage_messages) {
+                iw.sendAriesDirectMessage({ data: { message: message } })
+            }
             iw.notifyProofRequest({ data: { proof_request_created_at: proof_request_created_at, entity_name: 'IW Test Page', entity_url: 'localhost:9010', entity_message: 'You need to present proof.' } });
         }
 
