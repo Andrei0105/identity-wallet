@@ -10,7 +10,9 @@ function saveAgentEndpoint() {
     endpoint = $('#agent_endpoint').val()
     http_endpoint = $('#agent_http_endpoint').val()
     api_key = $('#agent_endpoint_api_key').val()
-    console.log(endpoint, api_key)
+    inpage_messaging = $('#inpage_messaging').prop('checked');
+    console.log(endpoint, api_key, http_endpoint, inpage_messaging);
+    chrome.storage.local.set({ 'inpage_messaging': inpage_messaging });
     chrome.storage.local.set({ 'aries_http_endpoint': http_endpoint });
     chrome.storage.local.set({ 'aries_endpoint': endpoint });
     chrome.storage.local.set({ 'aries_api_key': api_key });
