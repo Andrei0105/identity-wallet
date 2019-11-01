@@ -5,6 +5,11 @@
 // inpage_messages is true if message passing via the extension is used
 window.iw = { name: 'identitywallet', inpage_messages: undefined }
 
+// send message to the content script to let it know that the script was loaded
+window.postMessage({
+    type: "is-script-injected",
+});
+
 window.iw.requestUportClaims =
     function requestUportClaims(event) {
         data = event.data;
